@@ -28,6 +28,7 @@ func main() {
 	r.POST("/domains", modules.HandlerAddNewDomain)
 
 	// Users
+	r.POST("/users/:domain_id", modules.HandleUserAdd)
 	r.GET("/users/:domain_id", modules.HandlerUserLists)
 
 	// No Route

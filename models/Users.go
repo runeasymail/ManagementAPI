@@ -8,10 +8,10 @@ import (
 )
 
 type Users struct {
-	Id       uint64 `db:"id" json:"id"`
-	DomainID uint64 `db:"domain_id" json:"domain_id"`
-	Password string `db:"password" json:"-"`
-	Email    string `db:"email" json:"email"`
+	Id       uint64 `db:"id" json:"id" form:"id"`
+	DomainID uint64 `db:"domain_id" json:"domain_id" form:"domain_id" validation:"required"`
+	Password string `db:"password" json:"-" form:"password" validation:"required"`
+	Email    string `db:"email" json:"email" form:"email" validation:"email,required"`
 }
 
 func GetAllUsers(domain_id uint64) (result []Users) {
