@@ -64,6 +64,13 @@ Example:
 }
 ```
 
+### POST /users/:domain_id
+params:
+```
+domain_id - id of domain
+email - email address of new user
+password - password of new user (clear) it will encrypted
+```
 
 ## Instalation
 ```
