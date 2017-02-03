@@ -19,6 +19,11 @@ type config struct {
 	Mysql struct {
 		Dsn string `ini:"dsn"`
 	} `ini:"mysql"`
+	Auth struct {
+		SecretKey string `ini:"secretKey"`
+		Username  string `ini:"username"`
+		Password  string `ini:"password"`
+	} `ini:"auth"`
 }
 
 func (data config) GetAsJSON() (res string) {

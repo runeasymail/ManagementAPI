@@ -28,18 +28,20 @@ func main() {
 	// Add proper headers for CORS
 	r.Use(middlewares.CORSMiddleware())
 
-	// dummy auth check
-	r.GET("/auth-check", func(c *gin.Context) {
-		c.JSON(200, gin.H{"result": true})
-	})
+	// Auth
+	r.POST("/auth", modules.HandlerAuth)
 
-	// Domains
-	r.GET("/domains", modules.HandlerGetAllDomains)
-	r.POST("/domains", modules.HandlerAddNewDomain)
+	authorized := r.Group("")
+	authorized.Use(middlewares.AuthMiddleware())
+	{
+		// Domains
+		authorized.GET("/domains", modules.HandlerGetAllDomains)
+		authorized.POST("/domains", modules.HandlerAddNewDomain)
 
-	// Users
-	r.POST("/users/:domain_id", modules.HandleUserAdd)
-	r.GET("/users/:domain_id", modules.HandlerUserLists)
+		// Users
+		authorized.POST("/users/:domain_id", modules.HandleUserAdd)
+		authorized.GET("/users/:domain_id", modules.HandlerUserLists)
+	}
 
 	// No Route
 	r.NoRoute(func(c *gin.Context) {
