@@ -21,7 +21,7 @@ func HandlerAuth(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"result": false, "msg": "Username/password is required"})
 		return
 	}
-	if helpers.Config.Auth.Username != username && helpers.Config.Auth.Password != password {
+	if helpers.Config.Auth.Username != username || helpers.Config.Auth.Password != password {
 		c.JSON(http.StatusUnauthorized, gin.H{"result": false, "msg": "Username/password is not correct"})
 		return
 	}
