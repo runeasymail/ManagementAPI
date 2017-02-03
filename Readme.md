@@ -3,18 +3,38 @@
 
 ## Endpoints
 
+### Authorization
+For access all of these endpoints all calls needs to specify `Auth-token` header with token which is obtained from `/auth` endpoint
+
+
+
 ### POST /auth
-For all of methods above you need to send `Auth-token` header with token which can be obtain from call to `/auth
- method
- 
-Example:
+```
+username - string 
+password - string
+```
+
+Example `curl` request:
 ```curl
 curl -X POST  -F "username=yuksel" -F "password=test" "http://localhost:8081/auth"
 ```
-If auth is successfull result must be like:
+
+if auth call is successful result will be like:
 ```json
-{"result":true,"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0ODYxMTUzNTEsInVzZXJuYW1lIjoieXVrc2VsIn0.jIaigJSR8NQOuXR6Sjrcccz_q9KrodD2rQ6e0dLWlgE"}
+{
+  "result": true,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0ODYxMTY0MDYsInVzZXJuYW1lIjoieXVrc2VsIn0.ZWXvA0S7_HFEsvAuIMeX7NE607Qiibgg4Sr-Arku_eo"
+}
 ```
+if it's not result will be like: 
+
+```json
+{
+  "msg": "Username/password is not correct",
+  "result": false
+}
+```
+
 
 ### GET /domains
 It's will give list of all availible domains with ther internal id
