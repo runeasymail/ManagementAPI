@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/op/go-logging"
 	"github.com/runeasymail/ManagementAPI/helpers"
+	"github.com/runeasymail/ManagementAPI/middlewares"
 	"github.com/runeasymail/ManagementAPI/modules"
 )
 
@@ -21,7 +22,16 @@ func main() {
 	// connect mysql
 	helpers.InitMysql()
 
+	// default gin engine
 	r := gin.Default()
+
+	// Add proper headers for CORS
+	r.Use(middlewares.CORSMiddleware())
+
+	// dummy auth check
+	r.GET("/auth-check", func(c *gin.Context) {
+		c.JSON(200, gin.H{"result": true})
+	})
 
 	// Domains
 	r.GET("/domains", modules.HandlerGetAllDomains)
@@ -45,5 +55,5 @@ func main() {
 	})
 
 	log.Info("Starting app on port", helpers.Config.App.Port)
-	r.Run("127.0.0.1:" + helpers.Config.App.Port)
+	r.Run(":" + helpers.Config.App.Port)
 }

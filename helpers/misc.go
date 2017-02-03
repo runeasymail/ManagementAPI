@@ -12,8 +12,8 @@ func GetDBFields(el interface{}, key string) []string {
 		field := t.Field(i)
 		tag := field.Tag.Get(key)
 
-		if tag != ""{
-			select_elements = append(select_elements,  tag )
+		if tag != "" {
+			select_elements = append(select_elements, tag)
 		}
 	}
 

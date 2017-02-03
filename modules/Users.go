@@ -1,10 +1,10 @@
 package modules
 
 import (
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/runeasymail/ManagementAPI/models"
 	"strconv"
-	"github.com/asaskevich/govalidator"
 )
 
 func HandlerUserLists(c *gin.Context) {
@@ -30,17 +30,17 @@ func HandleUserAdd(c *gin.Context) {
 	is_valid, err := govalidator.ValidateStruct(data)
 
 	if !is_valid {
-		c.JSON(200, gin.H{"result":false, "error": err.Error() })
+		c.JSON(200, gin.H{"result": false, "error": err.Error()})
 		return
 	}
 
 	res, err := models.AddNewUser(data)
 
 	if !res {
-		c.JSON(200, gin.H{"result":false, "error": err.Error() })
+		c.JSON(200, gin.H{"result": false, "error": err.Error()})
 		return
 	}
 
-	c.JSON(200, gin.H{"result":true})
+	c.JSON(200, gin.H{"result": true})
 
 }
