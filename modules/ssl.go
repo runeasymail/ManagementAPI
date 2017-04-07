@@ -42,6 +42,8 @@ func letsEncryptInit(Hostname string) {
 	commands = append(commands, cmds{Program: "cat", Command: []string{"signed.crt", "/ssl/intermediate.pem", ">", "/ssl/chained.pem"}})
 
 	for el := range commands {
+		log.Println( commands[el].Program )
+		log.Println( commands[el].Command )
 		out, er := exec.Command(commands[el].Program, commands[el].Command...).Output()
 		if er != nil {
 			log.Println(er)
