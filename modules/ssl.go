@@ -83,7 +83,7 @@ func letsEncryptInit(Hostname string) {
 	exec.Command("cp", []string{"/ssl/chained.pem","/etc/dovecot/dovecot.pem" }...).Output()
 	exec.Command("cp", []string{"/ssl/domain.key","/etc/dovecot/private/dovecot.pem" }...).Output()
 
-	out, er = exec.Command("service", []string{"nginx","restart" }...).Output()
+	out, er = exec.Command("service", []string{"nginx","reload" }...).Output()
 	if er !=nil {
 		log.Println(er)
 	} else {
