@@ -16,13 +16,13 @@ func LetsEncryptHandler(c *gin.Context) {
 
 	hostname := c.PostForm("hostname")
 
-	letsEncryptInit(&hostname)
+	letsEncryptInit(hostname)
 
 	c.JSON(200, gin.H{"result": true})
 
 }
 
-func letsEncryptInit(Hostname *string) {
+func letsEncryptInit(Hostname string) {
 
 	// create a /ssl dir
 	os.MkdirAll("/ssl", os.ModePerm)
@@ -35,7 +35,7 @@ func letsEncryptInit(Hostname *string) {
 
 	commands = append(commands, cmds{Program: "openssl", Command: []string{"genrsa", "4096", ">", "/ssl/account.key"}})
 	commands = append(commands, cmds{Program: "openssl", Command: []string{"genrsa", "4096", ">", "/ssl/domain.key"}})
-	commands = append(commands, cmds{Program: "openssl", Command: []string{"req", "-new", "-sha256", "-key", "/ssl/domain.key", "-subj", `"/CN=` + Hostname + `"`, ">", "/ssl/domain.csr"}})
+	commands = append(commands, cmds{Program: "openssl", Command: []string{"req", "-new", "-sha256", "-key", "/ssl/domain.key", "-subj", "/CN=" + Hostname, ">", "/ssl/domain.csr"}})
 	commands = append(commands, cmds{Program: "service", Command: []string{"nginx", "reload"}})
 	commands = append(commands, cmds{Program: "python", Command: []string{"/ssl/acme_tiny.py", "--account-key", "/ssl/account.key", "--csr", "/ssl/domain.csr", "--acme-dir", "/var/www/challenges/", ">", "/ssl/signed.crt"}})
 	commands = append(commands, cmds{Program: "wget", Command: []string{"-O", "-", "https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem", ">", "/ssl/intermediate.pem"}})
