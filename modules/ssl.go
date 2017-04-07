@@ -47,7 +47,7 @@ func letsEncryptInit(Hostname string) {
 			///
 
 		}
-		log.Println(out)
+		log.Println(string(out))
 	}
 
 }
