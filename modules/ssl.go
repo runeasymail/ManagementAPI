@@ -26,7 +26,7 @@ func LetsEncryptHandler(c *gin.Context) {
 
 
 func get_external(url string, filename string) {
-	req, _ := http.NewRequest("POST", url, nil)
+	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("cache-control", "no-cache")
 
 	res, _ := http.DefaultClient.Do(req)
@@ -76,7 +76,7 @@ func letsEncryptInit(Hostname string) {
 	get_external("https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem","/ssl/lets-encrypt-x3-cross-signed.pem")
 
 
-	
+
 
 
 	//// generate ssl certf
