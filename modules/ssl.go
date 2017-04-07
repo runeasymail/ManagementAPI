@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"io/ioutil"
 )
 
 type cmds struct {
@@ -33,8 +34,14 @@ func letsEncryptInit(Hostname string) {
 
 
 	out, _ := exec.Command("openssl", []string{"genrsa", "4096"}...).Output()
+	ioutil.WriteFile("/ssl/account.key", out, os.ModePerm)
 
-	log.Println(out)
+	out, _ = exec.Command("openssl", []string{"genrsa", "4096"}...).Output()
+	ioutil.WriteFile("/ssl/domain.key", out, os.ModePerm)
+
+	
+
+
 
 
 	//// generate ssl certf
