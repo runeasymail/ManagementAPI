@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"io/ioutil"
 	"log"
+	"net/http"
 )
 
 type cmds struct {
@@ -20,6 +21,20 @@ func LetsEncryptHandler(c *gin.Context) {
 	letsEncryptInit(hostname)
 
 	c.JSON(200, gin.H{"result": true})
+
+}
+
+
+func get_external(url string, filename string) {
+	req, _ := http.NewRequest("POST", url, nil)
+	req.Header.Add("cache-control", "no-cache")
+
+	res, _ := http.DefaultClient.Do(req)
+
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+
+	ioutil.WriteFile(filename, body, os.ModePerm)
 
 }
 
@@ -45,9 +60,23 @@ func letsEncryptInit(Hostname string) {
 	}
 	ioutil.WriteFile("/ssl/domain.csr", out, os.ModePerm)
 
+	get_external("https://raw.githubusercontent.com/diafygi/acme-tiny/master/acme_tiny.py","/ssl/acme_tiny.py")
+
+	// python acme_tiny.py --account-key ./account.key --csr ./domain.csr --acme-dir /var/www/challenges/ > ./signed.crt
 
 
+	out, er = exec.Command("python", []string{"/ssl/acme_tiny.py", "--account-key", "/ssl/account.key", "--csr", "/ssl/domain.csr", "--acme-dir", "/var/www/challenges/" }...).Output()
 
+	if er !=nil {
+		log.Println(er)
+	}
+	ioutil.WriteFile("/ssl/signed.crt", out, os.ModePerm)
+
+
+	get_external("https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem","/ssl/lets-encrypt-x3-cross-signed.pem")
+
+
+	
 
 
 	//// generate ssl certf
