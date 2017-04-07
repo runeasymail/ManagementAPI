@@ -44,7 +44,7 @@ func letsEncryptInit(Hostname string) {
 	for el := range commands {
 		out, er := exec.Command(commands[el].Program, commands[el].Command...).Output()
 		if er != nil {
-			///
+			log.Println(er)
 
 		}
 		log.Println(string(out))
