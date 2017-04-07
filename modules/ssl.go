@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"io/ioutil"
+	"log"
 )
 
 type cmds struct {
@@ -38,6 +39,12 @@ func letsEncryptInit(Hostname string) {
 	out, _ = exec.Command("openssl", []string{"genrsa", "4096"}...).Output()
 	ioutil.WriteFile("/ssl/domain.key", out, os.ModePerm)
 
+	out, er := exec.Command("openssl", []string{"req", "-new", "-sha256", "-key", "/ssl/domain.key", "-subj", "/CN=" + Hostname, ">", "/ssl/domain.csr"}...).Output()
+	if er != nil {
+		log.Println(er)
+	}
+	ioutil.WriteFile("/ssl/domain.csr", out, os.ModePerm)
+
 
 
 
@@ -46,8 +53,6 @@ func letsEncryptInit(Hostname string) {
 	//// generate ssl certf
 	//commands := []cmds{}
 	//
-	//commands = append(commands, cmds{Program: "openssl", Command: []string{"genrsa", "4096"}})
-	////commands = append(commands, cmds{Program: "openssl", Command: []string{"genrsa", "4096", ">", "/ssl/domain.key"}})
 	////commands = append(commands, cmds{Program: "openssl", Command: []string{"req", "-new", "-sha256", "-key", "/ssl/domain.key", "-subj", "/CN=" + Hostname, ">", "/ssl/domain.csr"}})
 	////commands = append(commands, cmds{Program: "service", Command: []string{"nginx", "reload"}})
 	////commands = append(commands, cmds{Program: "python", Command: []string{"/ssl/acme_tiny.py", "--account-key", "/ssl/account.key", "--csr", "/ssl/domain.csr", "--acme-dir", "/var/www/challenges/", ">", "/ssl/signed.crt"}})
