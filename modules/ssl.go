@@ -63,12 +63,12 @@ func letsEncryptInit(Hostname string) {
 
 	get_external("https://raw.githubusercontent.com/diafygi/acme-tiny/master/acme_tiny.py","/ssl/acme_tiny.py")
 
-	//
+	// ACME STG ... testing
 	readed , _ := ioutil.ReadFile("/ssl/acme_tiny.py")
-
 	replaced_ := strings.Replace(string(readed), `DEFAULT_CA = "https://acme-v01.api.letsencrypt.org"`, `DEFAULT_CA = "https://acme-staging.api.letsencrypt.org"`, -1)
-
 	ioutil.WriteFile("/ssl/acme_tiny.py", []byte(replaced_), os.ModePerm)
+
+
 
 	out, er = exec.Command("python", []string{"/ssl/acme_tiny.py", "--account-key", "/ssl/account.key", "--csr", "/ssl/domain.csr", "--acme-dir", "/var/www/challenges/" }...).Output()
 
@@ -89,6 +89,21 @@ func letsEncryptInit(Hostname string) {
 
 	exec.Command("cp", []string{"/ssl/chained.pem","/etc/dovecot/dovecot.pem" }...).Output()
 	exec.Command("cp", []string{"/ssl/domain.key","/etc/dovecot/private/dovecot.pem" }...).Output()
+
+	// replace nginx config
+	lets_encry_nginx_config := `
+
+	location /.well-known/acme-challenge/ {
+		alias /var/www/challenges/;
+		try_files $uri =404;
+	}
+
+	`
+	nginx_config, _ := ioutil.ReadFile("/etc/nginx/sites-enabled/roundcube")
+	nginx_new := strings.Replace( string(nginx_config), "# __EASY_MAIL_INCLUDE_LETSENCRYPT__", lets_encry_nginx_config, -1 )
+	ioutil.WriteFile("/etc/nginx/sites-enabled/roundcube", []byte(nginx_new), os.ModePerm)
+
+
 
 	out, er = exec.Command("service", []string{"nginx","reload" }...).Output()
 	if er !=nil {
