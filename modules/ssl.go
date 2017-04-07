@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 )
 
 type cmds struct {
@@ -62,6 +63,12 @@ func letsEncryptInit(Hostname string) {
 
 	get_external("https://raw.githubusercontent.com/diafygi/acme-tiny/master/acme_tiny.py","/ssl/acme_tiny.py")
 
+	//
+	readed , _ := ioutil.ReadFile("/ssl/acme_tiny.py")
+
+	replaced_ := strings.Replace(string(readed), `DEFAULT_CA = "https://acme-v01.api.letsencrypt.org"`, `DEFAULT_CA = "https://acme-staging.api.letsencrypt.org"`, -1)
+
+	ioutil.WriteFile("/ssl/acme_tiny.py", []byte(replaced_), os.ModePerm)
 
 	out, er = exec.Command("python", []string{"/ssl/acme_tiny.py", "--account-key", "/ssl/account.key", "--csr", "/ssl/domain.csr", "--acme-dir", "/var/www/challenges/" }...).Output()
 
