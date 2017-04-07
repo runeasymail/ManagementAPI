@@ -62,8 +62,6 @@ func letsEncryptInit(Hostname string) {
 
 	get_external("https://raw.githubusercontent.com/diafygi/acme-tiny/master/acme_tiny.py","/ssl/acme_tiny.py")
 
-	// python acme_tiny.py --account-key ./account.key --csr ./domain.csr --acme-dir /var/www/challenges/ > ./signed.crt
-
 
 	out, er = exec.Command("python", []string{"/ssl/acme_tiny.py", "--account-key", "/ssl/account.key", "--csr", "/ssl/domain.csr", "--acme-dir", "/var/www/challenges/" }...).Output()
 
@@ -80,9 +78,6 @@ func letsEncryptInit(Hostname string) {
 		log.Println(er)
 	}
 	ioutil.WriteFile("/ssl/chained.pem", out, os.ModePerm)
-
-	// /etc/dovecot/dovecot.pem
-
 
 
 	exec.Command("cp", []string{"/ssl/chained.pem","/etc/dovecot/dovecot.pem" }...).Output()
