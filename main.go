@@ -41,6 +41,9 @@ func main() {
 		// Users
 		authorized.POST("/users/:domain_id", modules.HandleUserAdd)
 		authorized.GET("/users/:domain_id", modules.HandlerUserLists)
+
+		// let's encrypt
+		authorized.POST("/ssl/letsencrypt/install", modules.LetsEncryptHandler)
 	}
 
 	// No Route
