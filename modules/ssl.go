@@ -64,9 +64,9 @@ func letsEncryptInit(Hostname string) {
 	get_external("https://raw.githubusercontent.com/diafygi/acme-tiny/master/acme_tiny.py","/ssl/acme_tiny.py")
 
 	// ACME STG ... testing
-	readed , _ := ioutil.ReadFile("/ssl/acme_tiny.py")
-	replaced_ := strings.Replace(string(readed), `DEFAULT_CA = "https://acme-v01.api.letsencrypt.org"`, `DEFAULT_CA = "https://acme-staging.api.letsencrypt.org"`, -1)
-	ioutil.WriteFile("/ssl/acme_tiny.py", []byte(replaced_), os.ModePerm)
+	//readed , _ := ioutil.ReadFile("/ssl/acme_tiny.py")
+	//replaced_ := strings.Replace(string(readed), `DEFAULT_CA = "https://acme-v01.api.letsencrypt.org"`, `DEFAULT_CA = "https://acme-staging.api.letsencrypt.org"`, -1)
+	//ioutil.WriteFile("/ssl/acme_tiny.py", []byte(replaced_), os.ModePerm)
 
 
 	// replace nginx config
