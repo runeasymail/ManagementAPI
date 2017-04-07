@@ -39,7 +39,7 @@ func letsEncryptInit(Hostname string) {
 	out, _ = exec.Command("openssl", []string{"genrsa", "4096"}...).Output()
 	ioutil.WriteFile("/ssl/domain.key", out, os.ModePerm)
 
-	out, er := exec.Command("openssl", []string{"req", "-new", "-sha256", "-key", "/ssl/domain.key", "-subj", "/CN=" + Hostname, ">", "/ssl/domain.csr"}...).Output()
+	out, er := exec.Command("openssl", []string{"req", "-new", "-sha256", "-key", "/ssl/domain.key", "-subj", "/CN=" + Hostname }...).Output()
 	if er != nil {
 		log.Println(er)
 	}
