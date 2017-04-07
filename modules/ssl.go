@@ -2,7 +2,6 @@ package modules
 
 import (
 	"github.com/gin-gonic/gin"
-	"log"
 	"os"
 	"os/exec"
 	"io/ioutil"
@@ -39,7 +38,7 @@ func letsEncryptInit(Hostname string) {
 	out, _ = exec.Command("openssl", []string{"genrsa", "4096"}...).Output()
 	ioutil.WriteFile("/ssl/domain.key", out, os.ModePerm)
 
-	
+
 
 
 
