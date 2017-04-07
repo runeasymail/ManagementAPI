@@ -33,7 +33,7 @@ func letsEncryptInit(Hostname string) {
 	// generate ssl certf
 	commands := []cmds{}
 
-	commands = append(commands, cmds{Program: "openssl", Command: []string{"genrsa", "4096", ">", "/ssl/account.key"}})
+	commands = append(commands, cmds{Program: "openssl", Command: []string{"genrsa", "4096"}})
 	//commands = append(commands, cmds{Program: "openssl", Command: []string{"genrsa", "4096", ">", "/ssl/domain.key"}})
 	//commands = append(commands, cmds{Program: "openssl", Command: []string{"req", "-new", "-sha256", "-key", "/ssl/domain.key", "-subj", "/CN=" + Hostname, ">", "/ssl/domain.csr"}})
 	//commands = append(commands, cmds{Program: "service", Command: []string{"nginx", "reload"}})
