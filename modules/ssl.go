@@ -37,13 +37,15 @@ func CheckSSLisValidHandler(c *gin.Context) {
 
 func checkValid(url string) int64 {
 	fullURL := url + ":443"
-	log.Println(fullURL)
-	conn, _ := tls.Dial("tcp", fullURL, &tls.Config{})
-	cert := conn.ConnectionState().PeerCertificates[0]
-	end := cert.NotAfter
-	diff := end.Sub(time.Now())
-	days_left := (diff / (time.Hour * 24)).Nanoseconds()
-	return days_left
+	conn, er := tls.Dial("tcp", fullURL, &tls.Config{})
+	if er != nil {
+		cert := conn.ConnectionState().PeerCertificates[0]
+		end := cert.NotAfter
+		diff := end.Sub(time.Now())
+		days_left := (diff / (time.Hour * 24)).Nanoseconds()
+		return days_left
+	}
+	return 0
 }
 
 func get_external(url string, filename string) {
