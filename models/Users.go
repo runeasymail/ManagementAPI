@@ -21,6 +21,11 @@ func GetAllUsers(domain_id uint64) (result []Users) {
 	return
 }
 
+func ChangePassword(data Users) {
+	sql := `update virtual_users set password = ? where id = ? limit 1`
+	helpers.MyDB.Unsafe().Exec(sql, data.GenEncryptedPassword(), data.Id)
+}
+
 func AddNewUser(data Users) (result bool, err error) {
 
 	var count uint64

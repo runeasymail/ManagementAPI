@@ -22,6 +22,17 @@ func HandlerUserLists(c *gin.Context) {
 	c.JSON(200, gin.H{"users": data})
 }
 
+func HandlerUserPasswordChange(c *gin.Context) {
+
+	data := models.Users{}
+	c.Bind(&data)
+	models.ChangePassword(data)
+
+	c.JSON(200,gin.H{"result":true})
+}
+
+
+
 func HandleUserAdd(c *gin.Context) {
 
 	data := models.Users{}

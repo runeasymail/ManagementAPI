@@ -24,7 +24,6 @@ func LetsEncryptHandler(c *gin.Context) {
 	letsEncryptInit(hostname)
 
 	c.JSON(200, gin.H{"result": true})
-
 }
 
 func CheckSSLisValidHandler(c *gin.Context) {
