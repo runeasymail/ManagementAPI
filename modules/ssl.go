@@ -37,6 +37,7 @@ func CheckSSLisValidHandler(c *gin.Context) {
 
 func checkValid(url string) int64 {
 	fullURL := url + ":443"
+	log.Println(fullURL)
 	conn, _ := tls.Dial("tcp", fullURL, &tls.Config{})
 	cert := conn.ConnectionState().PeerCertificates[0]
 	end := cert.NotAfter
