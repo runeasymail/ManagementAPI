@@ -42,6 +42,9 @@ func main() {
 		authorized.POST("/users/:domain_id", modules.HandleUserAdd)
 		authorized.GET("/users/:domain_id", modules.HandlerUserLists)
 
+		// ssl
+		authorized.POST("/ssl/get-left-days", modules.CheckSSLisValidHandler)
+
 		// let's encrypt
 		authorized.POST("/ssl/letsencrypt/install", modules.LetsEncryptHandler)
 	}
