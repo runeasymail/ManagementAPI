@@ -5,6 +5,7 @@ import (
 	"github.com/runeasymail/ManagementAPI/helpers"
 	"os/exec"
 	"strings"
+	"log"
 )
 
 type Users struct {
@@ -22,8 +23,9 @@ func GetAllUsers(domain_id uint64) (result []Users) {
 }
 
 func ChangePassword(data Users) {
-	sql := `update virtual_users set password = ? where id = ? limit 1`
-	helpers.MyDB.Unsafe().Exec(sql, data.GenEncryptedPassword(), data.Id)
+	log.Println(data)
+	sql := `update virtual_users set password = ? where id = ? and domain_id = ?  limit 1`
+	helpers.MyDB.Unsafe().Exec(sql, data.GenEncryptedPassword(), data.Id, data.DomainID)
 }
 
 func AddNewUser(data Users) (result bool, err error) {
