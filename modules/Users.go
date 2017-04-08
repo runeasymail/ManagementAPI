@@ -26,7 +26,10 @@ func HandlerUserPasswordChange(c *gin.Context) {
 
 	data := models.Users{}
 	c.Bind(&data)
-	models.ChangePassword(data)
+
+	if data.DomainID != 0 && data.Id != 0 {
+		go models.ChangePassword(data)
+	}
 
 	c.JSON(200,gin.H{"result":true})
 }
