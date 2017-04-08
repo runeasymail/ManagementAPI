@@ -39,8 +39,8 @@ func main() {
 		authorized.POST("/domains", modules.HandlerAddNewDomain)
 
 		// Users
-		authorized.POST("/users/change-password", modules.HandlerUserPasswordChange)
 		authorized.POST("/users/:domain_id", modules.HandleUserAdd)
+		authorized.POST("/user-change-password", modules.HandlerUserPasswordChange)
 		authorized.GET("/users/:domain_id", modules.HandlerUserLists)
 
 		// ssl
