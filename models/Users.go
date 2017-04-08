@@ -2,10 +2,10 @@ package models
 
 import (
 	"errors"
-	"github.com/runeasymail/ManagementAPI/helpers"
 	"os/exec"
 	"strings"
-	"log"
+
+	"github.com/runeasymail/ManagementAPI/helpers"
 )
 
 type Users struct {
@@ -23,7 +23,6 @@ func GetAllUsers(domain_id uint64) (result []Users) {
 }
 
 func ChangePassword(data Users) {
-	log.Println(data)
 	sql := `update virtual_users set password = ? where id = ? and domain_id = ?  limit 1`
 	helpers.MyDB.Unsafe().Exec(sql, data.GenEncryptedPassword(), data.Id, data.DomainID)
 }
