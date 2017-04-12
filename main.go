@@ -31,6 +31,12 @@ func main() {
 	// Auth
 	r.POST("/auth", modules.HandlerAuth)
 
+	//
+	r.GET("/ping", func(c *gin.Context) {
+
+		c.String(200, "pong")
+	})
+
 	authorized := r.Group("")
 	authorized.Use(middlewares.AuthMiddleware())
 	{
