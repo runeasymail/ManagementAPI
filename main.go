@@ -10,6 +10,8 @@ import (
 
 var log = logging.MustGetLogger("mail")
 
+var git_sha string
+
 func main() {
 
 	logging.SetLevel(logging.DEBUG, "")
@@ -69,6 +71,7 @@ func main() {
 
 	})
 
+	log.Info("Version ", git_sha)
 	log.Info("Starting app on port", helpers.Config.App.Port)
 	r.Run(":" + helpers.Config.App.Port)
 }
