@@ -3,11 +3,10 @@ sudo: required
 dist: trusty
 install: true
 go:
-  - 1.7.4
+  - master
 env:
   global:
     - GOARCH=amd64
-    - GO_FOR_RELEASE=1.7.3
     - IMAGE_NAME=runeasymail/ManagementAPI
 before_install:
   - go get -u github.com/kardianos/govendor
