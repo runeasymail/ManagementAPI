@@ -15,6 +15,7 @@ before_install:
 script:
   - govendor list
   - govendor sync
+  - print $TRAVIS_COMMIT
   - CGO_ENABLED=0 go build -ldflags "-X main.git_sha $TRAVIS_COMMIT" .
 
 notifications:
