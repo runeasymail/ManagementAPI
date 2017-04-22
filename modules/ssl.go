@@ -148,4 +148,5 @@ func letsEncryptInit(Hostname string, acme_default_ca string) (err error) {
 		log.Println(string(out))
 	}
 
+	return
 }
