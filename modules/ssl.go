@@ -9,8 +9,8 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"errors"
 	"time"
-	"github.com/pkg/errors"
 )
 
 type cmds struct {
