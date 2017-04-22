@@ -68,7 +68,7 @@ func get_external(url string, filename string) {
 
 }
 
-func letsEncryptInit(Hostname string, acme_default_ca string) (error error) {
+func letsEncryptInit(Hostname string, acme_default_ca string) (err error) {
 
 	// create a /ssl dir
 	os.MkdirAll("/ssl", os.ModePerm)
@@ -126,7 +126,7 @@ func letsEncryptInit(Hostname string, acme_default_ca string) (error error) {
 	ioutil.WriteFile("/ssl/signed.crt", out, os.ModePerm)
 
 	if string(out) == "" {
-		error = errors.New("Let's encrypt error")
+		err = errors.New("Let's encrypt error")
 		return
 	}
 
