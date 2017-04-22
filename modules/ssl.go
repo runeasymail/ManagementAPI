@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"strings"
 	"time"
+	"github.com/pkg/errors"
 )
 
 type cmds struct {
@@ -21,9 +22,16 @@ func LetsEncryptHandler(c *gin.Context) {
 
 	hostname := c.PostForm("hostname")
 
-	letsEncryptInit(hostname)
+	acme_default_ca := c.PostForm("default_ca")
 
-	c.JSON(200, gin.H{"result": true})
+	status := letsEncryptInit(hostname,acme_default_ca)
+
+	if status != nil {
+		c.JSON(200, gin.H{"result": false, "error": status})
+	} else {
+		c.JSON(200, gin.H{"result": true})
+	}
+
 }
 
 func CheckSSLisValidHandler(c *gin.Context) {
@@ -60,7 +68,7 @@ func get_external(url string, filename string) {
 
 }
 
-func letsEncryptInit(Hostname string) {
+func letsEncryptInit(Hostname string, acme_default_ca string) (error error) {
 
 	// create a /ssl dir
 	os.MkdirAll("/ssl", os.ModePerm)
@@ -83,9 +91,11 @@ func letsEncryptInit(Hostname string) {
 	get_external("https://raw.githubusercontent.com/diafygi/acme-tiny/master/acme_tiny.py", "/ssl/acme_tiny.py")
 
 	// ACME STG ... testing
-	//readed , _ := ioutil.ReadFile("/ssl/acme_tiny.py")
-	//replaced_ := strings.Replace(string(readed), `DEFAULT_CA = "https://acme-v01.api.letsencrypt.org"`, `DEFAULT_CA = "https://acme-staging.api.letsencrypt.org"`, -1)
-	//ioutil.WriteFile("/ssl/acme_tiny.py", []byte(replaced_), os.ModePerm)
+	if acme_default_ca == "staging" {
+		readed , _ := ioutil.ReadFile("/ssl/acme_tiny.py")
+		replaced_ := strings.Replace(string(readed), `DEFAULT_CA = "https://acme-v01.api.letsencrypt.org"`, `DEFAULT_CA = "https://acme-staging.api.letsencrypt.org"`, -1)
+		ioutil.WriteFile("/ssl/acme_tiny.py", []byte(replaced_), os.ModePerm)
+	}
 
 	// replace nginx config
 	lets_encry_nginx_config := `
@@ -114,6 +124,11 @@ func letsEncryptInit(Hostname string) {
 		log.Println(er)
 	}
 	ioutil.WriteFile("/ssl/signed.crt", out, os.ModePerm)
+
+	if string(out) == "" {
+		error = errors.New("Let's encrypt error")
+		return
+	}
 
 	get_external("https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem", "/ssl/lets-encrypt-x3-cross-signed.pem")
 
