@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"os/exec"
