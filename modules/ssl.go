@@ -125,7 +125,7 @@ func letsEncryptInit(Hostname string, acme_default_ca string) (err error) {
 	out, er = exec.Command("python", []string{"/ssl/acme_tiny.py", "--account-key", "/ssl/account.key", "--csr", "/ssl/domain.csr", "--acme-dir", "/var/www/challenges/"}...).Output()
 
 	if er != nil {
-		log.Debug("Python acme Tiny Error", string(er))
+		log.Debug("Python acme Tiny Error", er)
 	}
 
 	ioutil.WriteFile("/ssl/signed.crt", out, os.ModePerm)
@@ -140,7 +140,7 @@ func letsEncryptInit(Hostname string, acme_default_ca string) (err error) {
 
 	out, er = exec.Command("cat", []string{"/ssl/signed.crt", "/ssl/intermediate.pem"}...).Output()
 	if er != nil {
-		log.Debug("cat signed with intermediate error", string(er))
+		log.Debug("cat signed with intermediate error", er)
 	}
 	ioutil.WriteFile("/ssl/chained.pem", out, os.ModePerm)
 
