@@ -12,6 +12,7 @@ import (
 	"time"
 	"github.com/op/go-logging"
 	"github.com/runeasymail/ManagementAPI/helpers"
+	"fmt"
 )
 
 type cmds struct {
@@ -33,7 +34,7 @@ func LetsEncryptHandler(c *gin.Context) {
 	status := letsEncryptInit(hostname,acme_default_ca)
 
 	if status != nil {
-		c.JSON(200, gin.H{"result": false, "error": status})
+		c.JSON(200, gin.H{"result": false, "error": fmt.Sprintf("%s", status)})
 	} else {
 		c.JSON(200, gin.H{"result": true})
 	}
