@@ -11,6 +11,7 @@ import (
 	"errors"
 	"time"
 	"github.com/op/go-logging"
+	"github.com/runeasymail/ManagementAPI/helpers"
 )
 
 type cmds struct {
@@ -20,7 +21,12 @@ type cmds struct {
 
 func LetsEncryptHandler(c *gin.Context) {
 
-	hostname := c.PostForm("hostname")
+	var log = logging.MustGetLogger("mail")
+
+	hostname := helpers.Config.App.Hostname
+
+	log.Debug("Generate SSL for ", hostname)
+
 
 	acme_default_ca := c.PostForm("default_ca")
 

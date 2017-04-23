@@ -13,6 +13,7 @@ var MyDB *sqlx.DB
 type config struct {
 	App struct {
 		Port string `ini:"port"`
+		Hostname string `ini:"hostname"`
 	} `ini:"app"`
 	Mysql struct {
 		Dsn string `ini:"dsn"`
