@@ -11,6 +11,7 @@ import (
 	"strings"
 	"errors"
 	"time"
+	"github.com/op/go-logging"
 )
 
 type cmds struct {
@@ -70,7 +71,11 @@ func get_external(url string, filename string) {
 
 func letsEncryptInit(Hostname string, acme_default_ca string) (err error) {
 
+	var log = logging.MustGetLogger("mail")
+
+
 	// create a /ssl dir
+	os.RemoveAll("/ssl")
 	os.MkdirAll("/ssl", os.ModePerm)
 
 	// mkdir -p /var/www/challenges/
@@ -84,7 +89,7 @@ func letsEncryptInit(Hostname string, acme_default_ca string) (err error) {
 
 	out, er := exec.Command("openssl", []string{"req", "-new", "-sha256", "-key", "/ssl/domain.key", "-subj", "/CN=" + Hostname}...).Output()
 	if er != nil {
-		log.Println(er)
+		log.Debug("OpenSSL Generate Domain Key error", er)
 	}
 	ioutil.WriteFile("/ssl/domain.csr", out, os.ModePerm)
 
@@ -113,19 +118,21 @@ func letsEncryptInit(Hostname string, acme_default_ca string) (err error) {
 	// nginx reload
 	out, er = exec.Command("service", []string{"nginx", "reload"}...).Output()
 	if er != nil {
-		log.Println(er)
+		log.Debug("NGINX Service Reload error ", er)
 	} else {
-		log.Println(string(out))
+		log.Debug("NGINX reload output", string(out))
 	}
 
 	out, er = exec.Command("python", []string{"/ssl/acme_tiny.py", "--account-key", "/ssl/account.key", "--csr", "/ssl/domain.csr", "--acme-dir", "/var/www/challenges/"}...).Output()
 
 	if er != nil {
-		log.Println(er)
+		log.Debug("Python acme Tiny Error", string(er))
 	}
+
 	ioutil.WriteFile("/ssl/signed.crt", out, os.ModePerm)
 
 	if string(out) == "" {
+		log.Debug("LetsEncrypt output is empty")
 		err = errors.New("Let's encrypt error")
 		return
 	}
@@ -134,7 +141,7 @@ func letsEncryptInit(Hostname string, acme_default_ca string) (err error) {
 
 	out, er = exec.Command("cat", []string{"/ssl/signed.crt", "/ssl/intermediate.pem"}...).Output()
 	if er != nil {
-		log.Println(er)
+		log.Debug("cat signed with intermediate error", string(er))
 	}
 	ioutil.WriteFile("/ssl/chained.pem", out, os.ModePerm)
 
@@ -143,10 +150,9 @@ func letsEncryptInit(Hostname string, acme_default_ca string) (err error) {
 
 	out, er = exec.Command("service", []string{"nginx", "reload"}...).Output()
 	if er != nil {
-		log.Println(er)
+		log.Debug("NGINX Service Reload error ", er)
 	} else {
-		log.Println(string(out))
+		log.Debug("NGINX reload output", string(out))
 	}
-
 	return
 }
