@@ -46,6 +46,9 @@ func main() {
 		authorized.GET("/domains", modules.HandlerGetAllDomains)
 		authorized.POST("/domains", modules.HandlerAddNewDomain)
 
+		// dkim
+		authorized.POST("/dkim/add-new-domain", modules.HandlerNewDkimDomain)
+
 		// Users
 		authorized.POST("/users/:domain_id", modules.HandleUserAdd)
 		authorized.POST("/user-change-password", modules.HandlerUserPasswordChange)

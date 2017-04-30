@@ -3,6 +3,7 @@ package modules
 import (
 	"fmt"
 	"os"
+	"github.com/gin-gonic/gin"
 )
 
 var (
@@ -11,7 +12,17 @@ var (
 	signinTable  string = "/etc/opendkim/SigningTable"
 )
 
-func AddNewDomain(Domain string) {
+func HandlerNewDkimDomain(c *gin.Context) {
+
+	// validate hostname
+
+	add("mail2.yuks.me")
+
+
+
+}
+
+func add(Domain string) {
 
 	f, _ := os.OpenFile(trusted_host, os.O_APPEND, 0666)
 	f.WriteString("*" + Domain)
