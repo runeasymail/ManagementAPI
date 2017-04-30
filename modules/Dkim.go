@@ -18,9 +18,6 @@ func HandlerNewDkimDomain(c *gin.Context) {
 	// validate hostname
 
 	add("mail3.yuks.me")
-
-
-
 }
 
 func add(Domain string) {
@@ -29,9 +26,14 @@ func add(Domain string) {
 	if er != nil {
 		log.Println(er)
 	}
-	
+
+
+
 	f.WriteString("*" + Domain)
-	f.Close()
+	er = f.Close()
+	if er != nil {
+		log.Println(er)
+	}
 
 
 
