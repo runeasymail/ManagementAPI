@@ -16,7 +16,7 @@ func HandlerNewDkimDomain(c *gin.Context) {
 
 	// validate hostname
 
-	add("mail2.yuks.me")
+	add("mail3.yuks.me")
 
 
 
