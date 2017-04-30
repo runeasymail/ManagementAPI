@@ -24,7 +24,7 @@ func add(Domain string) {
 
 	f, _ := ioutil.ReadFile(trusted_host)
 	content := string(f)
-	content = fmt.Sprintf("%s /n *%s", Domain )
+	content = fmt.Sprintf(`%s \n %s`, content, "*"+Domain )
 
 	ioutil.WriteFile(trusted_host, []byte(content), os.ModePerm)
 
