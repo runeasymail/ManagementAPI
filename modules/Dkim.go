@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"github.com/gin-gonic/gin"
+	"log"
 )
 
 var (
@@ -24,9 +25,15 @@ func HandlerNewDkimDomain(c *gin.Context) {
 
 func add(Domain string) {
 
-	f, _ := os.OpenFile(trusted_host, os.O_APPEND, 0666)
+	f, er := os.OpenFile(trusted_host, os.O_APPEND, 0666)
+	if er != nil {
+		log.Println(er)
+	}
+	
 	f.WriteString("*" + Domain)
 	f.Close()
+
+
 
 	f, _ = os.OpenFile(keytable, os.O_APPEND, 0666)
 	f.WriteString(fmt.Sprintf("mail._domainkey.%s %s:mail:/etc/opendkim/keys/%s/mail.private", Domain, Domain, Domain))
