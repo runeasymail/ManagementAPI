@@ -160,5 +160,20 @@ func letsEncryptInit(Hostname string, acme_default_ca string) (err error) {
 	} else {
 		log.Debug("NGINX reload output", string(out))
 	}
+	
+	out, er = exec.Command("service", []string{"postfix", "reload"}...).Output()
+	if er != nil {
+		log.Debug("Postfix Service Reload error ", er)
+	} else {
+		log.Debug("Postfix reload output", string(out))
+	}
+	
+	out, er = exec.Command("service", []string{"dovecot", "restart"}...).Output()
+	if er != nil {
+		log.Debug("Dovecot Service Restart error ", er)
+	} else {
+		log.Debug("Dovecot reload output", string(out))
+	}
+	
 	return
 }
