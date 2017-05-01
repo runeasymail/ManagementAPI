@@ -19,10 +19,12 @@ func HandlerNewDkimDomain(c *gin.Context) {
 
 	// validate hostname
 
-	add("mail3.yuks.me")
+	res := add("mail3.yuks.me")
+
+	c.JSON(200, gin.H{"result": res})
 }
 
-func add(Domain string) {
+func add(Domain string) string {
 
 	var log = logging.MustGetLogger("mail")
 
@@ -72,5 +74,10 @@ func add(Domain string) {
 	if er != nil {
 		log.Debug("service opendkim restart error", er)
 	}
+
+
+	content_of_dkim, _ := ioutil.ReadFile("/etc/opendkim/keys/" + Domain + "/mail.txt" )
+
+	return string(content_of_dkim)
 
 }
