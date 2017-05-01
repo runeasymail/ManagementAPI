@@ -5,6 +5,7 @@ import (
 	"os"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
+	"github.com/op/go-logging"
 )
 
 var (
@@ -22,11 +23,19 @@ func HandlerNewDkimDomain(c *gin.Context) {
 
 func add(Domain string) {
 
+	var log = logging.MustGetLogger("mail")
+
+	log.Debug("Adding ", Domain, " in dkim registers")
+
 	f, _ := ioutil.ReadFile(trusted_host)
 	content := string(f)
-	content = fmt.Sprintf(`%s \n %s`, content, "*"+Domain )
+	content = fmt.Sprintf("%s \n %s", content, "*"+Domain )
+
+	log.Debug("Original ", trusted_host, "content: ", content)
 
 	ioutil.WriteFile(trusted_host, []byte(content), os.ModePerm)
+
+	
 
 
 
