@@ -2,10 +2,11 @@ package modules
 
 import (
 	"fmt"
-	"os"
 	"github.com/gin-gonic/gin"
-	"io/ioutil"
 	"github.com/op/go-logging"
+	"io/ioutil"
+	"os"
+	"os/exec"
 )
 
 var (
@@ -29,29 +30,47 @@ func add(Domain string) {
 
 	f, _ := ioutil.ReadFile(trusted_host)
 	content := string(f)
-	content = fmt.Sprintf("%s \n %s \n", content, "*"+Domain )
+	content = fmt.Sprintf("%s \n %s \n", content, "*"+Domain)
 
 	log.Debug("Original ", trusted_host, "content: ", content)
 
 	ioutil.WriteFile(trusted_host, []byte(content), os.ModePerm)
 
-
 	f, _ = ioutil.ReadFile(keytable)
 	content = string(f)
 	log.Debug("Original ", keytable, "content: ", content)
-	content = fmt.Sprintf("%s \n %s \n", content, fmt.Sprintf("mail._domainkey.%s %s:mail:/etc/opendkim/keys/%s/mail.private", Domain, Domain, Domain) )
+	content = fmt.Sprintf("%s \n %s \n", content, fmt.Sprintf("mail._domainkey.%s %s:mail:/etc/opendkim/keys/%s/mail.private", Domain, Domain, Domain))
 	ioutil.WriteFile(keytable, []byte(content), os.ModePerm)
-
 
 	f, _ = ioutil.ReadFile(signinTable)
 	content = string(f)
 	log.Debug("Original ", signinTable, "content: ", content)
-	content = fmt.Sprintf("%s \n %s \n", content, fmt.Sprintf("*@%s mail._domainkey.%s", Domain, Domain) )
+	content = fmt.Sprintf("%s \n %s \n", content, fmt.Sprintf("*@%s mail._domainkey.%s", Domain, Domain))
 	ioutil.WriteFile(signinTable, []byte(content), os.ModePerm)
 
-
-	
 	// create dir
 	os.MkdirAll("/etc/opendkim/keys/"+Domain, os.ModePerm)
+
+	os.Chdir("/etc/opendkim/keys/" + Domain)
+
+	_, er := exec.Command("opendkim-genkey", []string{"-s", "mail", "-d", Domain}...).Output()
+	if er != nil {
+		log.Debug("opendkim-genkey error", er)
+	}
+
+	_, er = exec.Command("chown", []string{"opendkim:opendkim", "mail.private"}...).Output()
+	if er != nil {
+		log.Debug("chown error", er)
+	}
+
+	_, er = exec.Command("service", []string{"postfix", "restart"}...).Output()
+	if er != nil {
+		log.Debug("service postfixx restart error", er)
+	}
+
+	_, er = exec.Command("service", []string{"opendkim", "restart"}...).Output()
+	if er != nil {
+		log.Debug("service opendkim restart error", er)
+	}
 
 }
