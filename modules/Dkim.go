@@ -19,7 +19,8 @@ func HandlerNewDkimDomain(c *gin.Context) {
 
 	// validate hostname
 
-	res := add("mail3.yuks.me")
+	domain := c.PostForm("domain")
+	res := add(domain)
 
 	c.JSON(200, gin.H{"result": res})
 }
