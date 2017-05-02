@@ -14,7 +14,6 @@ import (
 	"github.com/runeasymail/ManagementAPI/helpers"
 	"fmt"
 	"io"
-	"log"
 )
 
 type cmds struct {
