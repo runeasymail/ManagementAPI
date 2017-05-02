@@ -71,6 +71,7 @@ func UploadMySSLHandler(c *gin.Context) {
 	exec.Command("service", []string{"dovecot", "restart"}...).Output()
 	exec.Command("service", []string{"nginx", "restart"}...).Output()
 
+	c.JSON(200, gin.H{"result":true})
 }
 
 func CheckSSLisValidHandler(c *gin.Context) {
