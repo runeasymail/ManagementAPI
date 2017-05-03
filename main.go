@@ -56,6 +56,7 @@ func main() {
 
 		// ssl
 		authorized.POST("/ssl/get-left-days", modules.CheckSSLisValidHandler)
+		authorized.POST("/ssl/upload", modules.UploadMySSLHandler)
 
 		// let's encrypt
 		authorized.POST("/ssl/letsencrypt/install", modules.LetsEncryptHandler)

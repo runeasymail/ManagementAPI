@@ -13,6 +13,7 @@ import (
 	"github.com/op/go-logging"
 	"github.com/runeasymail/ManagementAPI/helpers"
 	"fmt"
+	"io"
 )
 
 type cmds struct {
@@ -39,6 +40,37 @@ func LetsEncryptHandler(c *gin.Context) {
 		c.JSON(200, gin.H{"result": true})
 	}
 
+}
+
+func UploadMySSLHandler(c *gin.Context) {
+
+	//ssl_certificate, _ := c.FormFile("ssl_certificate")
+	ssl_certificate, _, _ := c.Request.FormFile("ssl_certificate")
+	ssl_certificate_key, _, _ := c.Request.FormFile("ssl_certificate_key")
+
+	os.Remove("/etc/dovecot/dovecot.pem")
+	os.Remove("/etc/dovecot/private/dovecot.pem")
+
+	// create file
+	out, _ := os.Create("/etc/dovecot/dovecot.pem")
+	defer out.Close()
+	io.Copy(out, ssl_certificate)
+	// end of file creation
+
+
+	// create file
+	out, _ = os.Create("/etc/dovecot/private/dovecot.pem")
+	defer out.Close()
+	io.Copy(out, ssl_certificate_key)
+	// end of file creation
+
+
+	//restart services
+	exec.Command("service", []string{"postfix", "restart"}...).Output()
+	exec.Command("service", []string{"dovecot", "restart"}...).Output()
+	exec.Command("service", []string{"nginx", "restart"}...).Output()
+
+	c.JSON(200, gin.H{"result":true})
 }
 
 func CheckSSLisValidHandler(c *gin.Context) {
