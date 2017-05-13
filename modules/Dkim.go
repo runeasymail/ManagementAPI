@@ -33,7 +33,7 @@ func add(Domain string) string {
 
 	f, _ := ioutil.ReadFile(trusted_host)
 	content := string(f)
-	content = fmt.Sprintf("%s \n %s \n", content, "*"+Domain)
+	content = fmt.Sprintf("%s\n%s\n", content, "*"+Domain)
 
 	log.Debug("Original ", trusted_host, "content: ", content)
 
@@ -42,13 +42,13 @@ func add(Domain string) string {
 	f, _ = ioutil.ReadFile(keytable)
 	content = string(f)
 	log.Debug("Original ", keytable, "content: ", content)
-	content = fmt.Sprintf("%s \n %s \n", content, fmt.Sprintf("mail._domainkey.%s %s:mail:/etc/opendkim/keys/%s/mail.private", Domain, Domain, Domain))
+	content = fmt.Sprintf("%s\n%s\n", content, fmt.Sprintf("mail._domainkey.%s %s:mail:/etc/opendkim/keys/%s/mail.private", Domain, Domain, Domain))
 	ioutil.WriteFile(keytable, []byte(content), os.ModePerm)
 
 	f, _ = ioutil.ReadFile(signinTable)
 	content = string(f)
 	log.Debug("Original ", signinTable, "content: ", content)
-	content = fmt.Sprintf("%s \n %s \n", content, fmt.Sprintf("*@%s mail._domainkey.%s", Domain, Domain))
+	content = fmt.Sprintf("%s\n%s\n", content, fmt.Sprintf("*@%s mail._domainkey.%s", Domain, Domain))
 	ioutil.WriteFile(signinTable, []byte(content), os.ModePerm)
 
 	// create dir
