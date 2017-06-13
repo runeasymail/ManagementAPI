@@ -20,12 +20,12 @@ func HandlerNewDkimDomain(c *gin.Context) {
 	// validate hostname
 
 	domain := c.PostForm("domain")
-	res := add(domain)
+	pub, priv := add(domain)
 
-	c.JSON(200, gin.H{"result": res})
+	c.JSON(200, gin.H{"result": true, "public": pub, "private": priv})
 }
 
-func add(Domain string) string {
+func add(Domain string) (public string, private string) {
 
 	var log = logging.MustGetLogger("mail")
 
@@ -78,7 +78,11 @@ func add(Domain string) string {
 
 
 	content_of_dkim, _ := ioutil.ReadFile("/etc/opendkim/keys/" + Domain + "/mail.txt" )
+	content_of_private_dkim, _ := ioutil.ReadFile("/etc/opendkim/keys/" + Domain + "/mail.private" )
 
-	return string(content_of_dkim)
+	public = string(content_of_dkim)
+	private = string(content_of_private_dkim)
+
+	return
 
 }
