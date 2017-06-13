@@ -48,12 +48,16 @@ func AddNewDomain(domain string, username string, password string) (result bool,
 
 	id, _ := res.LastInsertId()
 
-	// add new User
-	userData := Users{DomainID: uint64(id), Password: password, Email: username}
-	_, err = AddNewUser(userData)
+	if username != "" && password != "" {
 
-	if err != nil {
-		return
+		// add new User
+		userData := Users{DomainID: uint64(id), Password: password, Email: username}
+		_, err = AddNewUser(userData)
+
+		if err != nil {
+			return
+		}
+
 	}
 
 	result = true
