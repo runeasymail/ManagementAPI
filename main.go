@@ -45,6 +45,7 @@ func main() {
 		// Domains
 		authorized.GET("/domains", modules.HandlerGetAllDomains)
 		authorized.POST("/domains", modules.HandlerAddNewDomain)
+		authorized.DELETE("/domain", modules.HandlerRemoveDomain)
 
 		// dkim
 		authorized.POST("/dkim/add-new-domain", modules.HandlerNewDkimDomain)

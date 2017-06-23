@@ -63,3 +63,8 @@ func AddNewDomain(domain string, username string, password string) (result bool,
 	result = true
 	return
 }
+
+func DeleteDomain(domain string) {
+	sql := `delete from virtual_domains where name = ? limit 1`
+	helpers.MyDB.Unsafe().Exec(sql, domain)
+}
