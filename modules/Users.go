@@ -7,6 +7,27 @@ import (
 	"strconv"
 )
 
+func HandleUserDelete(c *gin.Context) {
+
+	type form struct {
+		UserId string `form:"user_id" valid:"required"`
+		DomainID string `form:"domain_id" valid:"required"`
+	}
+
+	f := form{}
+	c.Bind(&f)
+
+	is_valid, err := govalidator.ValidateStruct(f)
+
+	if !is_valid {
+
+		c.JSON(200, gin.H{"result":false, "msg": err})
+		return
+	}
+	models.DeleteUser(f.UserId, f.DomainID)
+	c.JSON(200, gin.H{"result":true})
+}
+
 func HandlerUserLists(c *gin.Context) {
 
 	domain_id_string := c.Param("domain_id")

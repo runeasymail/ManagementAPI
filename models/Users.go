@@ -56,3 +56,8 @@ func (data Users) GenEncryptedPassword() string {
 
 	return out
 }
+
+func DeleteUser(user_id string, domain_id string) {
+	sql := `delete from vurtual_users where user_id = ? and domain_id = ? limit 1`
+	helpers.MyDB.Unsafe().Exec(sql, user_id, domain_id)
+}

@@ -54,6 +54,7 @@ func main() {
 		authorized.POST("/users/:domain_id", modules.HandleUserAdd)
 		authorized.POST("/user-change-password", modules.HandlerUserPasswordChange)
 		authorized.GET("/users/:domain_id", modules.HandlerUserLists)
+		authorized.DELETE("/users", modules.HandleUserDelete)
 
 		// ssl
 		authorized.POST("/ssl/get-left-days", modules.CheckSSLisValidHandler)
