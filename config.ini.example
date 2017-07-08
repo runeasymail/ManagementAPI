@@ -1,0 +1,12 @@
+[app]
+port=8081
+hostname=example.com
+
+[mysql]
+dsn=DB_USERNAME:DB_PASSWORD@tcp(DB_HOST:DB_PORT)/DB_NAME
+
+[auth]
+secretKey=SOME_RANDOM_KEY_IN_HERE
+username=AUTH_USERNAME
+password=AUTH_PASSWORD
+
