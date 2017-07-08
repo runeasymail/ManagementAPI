@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"github.com/runeasymail/ManagementAPI/helpers"
+	"os"
 )
 
 type Domains struct {
@@ -67,4 +68,5 @@ func AddNewDomain(domain string, username string, password string) (result bool,
 func DeleteDomain(domain string) {
 	sql := `delete from virtual_domains where name = ? limit 1`
 	helpers.MyDB.Unsafe().Exec(sql, domain)
+	os.RemoveAll("/var/mail/vhosts/"+domain+"/")
 }
