@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/runeasymail/ManagementAPI/helpers"
+	"os"
 )
 
 type Users struct {
@@ -58,6 +59,31 @@ func (data Users) GenEncryptedPassword() string {
 }
 
 func DeleteUser(user_id string, domain_id string) {
-	sql := `delete from vurtual_users where user_id = ? and domain_id = ? limit 1`
+	var userName string
+	sql := `select email from virtual_users where user_id = ? and domain_id = ? limit 1`
+	helpers.MyDB.Unsafe().Get(&userName, user_id, domain_id)
+
+	if userName == "" {
+		return
+	}
+
+	// domain name
+	var domain_name string
+	sql = `select name from virtual_domains where id = ? limit 1`
+	helpers.MyDB.Unsafe().Get(&domain_name, domain_id)
+
+
+	if domain_name == "" {
+		return
+	}
+
+	cmp := strings.Split(userName, "@")
+
+	// delete dir
+	os.RemoveAll("/var/mail/vhosts/"+domain_name+"/"+ cmp[0] + "/")
+
+	sql = `delete from virtual_users where user_id = ? and domain_id = ? limit 1`
 	helpers.MyDB.Unsafe().Exec(sql, user_id, domain_id)
+
+
 }
