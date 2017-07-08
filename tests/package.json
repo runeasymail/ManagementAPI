@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "frisby": "^0.8.5"
+  },
+  "scripts": {
+    "test": "jasmine"
+  }
+}
