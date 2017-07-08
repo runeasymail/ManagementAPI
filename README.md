@@ -5,7 +5,7 @@
 
 ## Install all the dependency libraries
 ```bash
-go get github.com/gin-gonic/gin github.com/go-sql-driver/mysql github.com/go-ini/ini github.com/op/go-logging github.com/jmoiron/sqlx github.com/dgrijalva/jwt-go
+go get github.com/gin-gonic/gin github.com/go-sql-driver/mysql github.com/go-ini/ini github.com/op/go-logging github.com/jmoiron/sqlx github.com/dgrijalva/jwt-go github.com/asaskevich/govalidator
 ```
 ## Build
 ```bash
