@@ -1,5 +1,4 @@
 var apiClient = require('../apiClient');
-var utils = require('../utils');
 
 apiClient.logged(function(frisby){
 	frisby.create('Get domains')
@@ -10,7 +9,7 @@ apiClient.logged(function(frisby){
 });
 
 apiClient.unlogged(function(frisby){
-	frisby.create('Get domains without login')
+	frisby.create('Get domains without token')
 		.get('domains')
 		.expectStatus(200)
 		.expectBodyContains('Token is not correct')
