@@ -10,8 +10,7 @@ import (
 func HandleUserDelete(c *gin.Context) {
 
 	type form struct {
-		UserId string `form:"user_id" valid:"required"`
-		DomainID string `form:"domain_id" valid:"required"`
+		Email string `form:"email" valid:"required"`
 	}
 
 	f := form{}
@@ -24,7 +23,7 @@ func HandleUserDelete(c *gin.Context) {
 		c.JSON(200, gin.H{"result":false, "msg": err})
 		return
 	}
-	models.DeleteUser(f.UserId, f.DomainID)
+	models.DeleteUser(f.Email)
 	c.JSON(200, gin.H{"result":true})
 }
 

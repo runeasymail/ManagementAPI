@@ -58,10 +58,7 @@ func (data Users) GenEncryptedPassword() string {
 	return out
 }
 
-func DeleteUser(user_id string, domain_id string) {
-	var userName string
-	sql := `select email from virtual_users where user_id = ? and domain_id = ? limit 1`
-	helpers.MyDB.Unsafe().Get(&userName, user_id, domain_id)
+func DeleteUser(userName string) {
 
 	if userName == "" {
 		return
@@ -69,8 +66,8 @@ func DeleteUser(user_id string, domain_id string) {
 
 	// domain name
 	var domain_name string
-	sql = `select name from virtual_domains where id = ? limit 1`
-	helpers.MyDB.Unsafe().Get(&domain_name, domain_id)
+	sql := `select name from virtual_domains where id IN (select domain_id from virtual_users where email = ?) limit 1`
+	helpers.MyDB.Unsafe().Get(&domain_name, userName)
 
 
 	if domain_name == "" {
@@ -82,8 +79,7 @@ func DeleteUser(user_id string, domain_id string) {
 	// delete dir
 	os.RemoveAll("/var/mail/vhosts/"+domain_name+"/"+ cmp[0] + "/")
 
-	sql = `delete from virtual_users where user_id = ? and domain_id = ? limit 1`
-	helpers.MyDB.Unsafe().Exec(sql, user_id, domain_id)
-
+	sql = `delete from virtual_users where email = ? limit 1`
+	helpers.MyDB.Unsafe().Exec(sql, userName)
 
 }
