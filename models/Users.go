@@ -67,7 +67,7 @@ func DeleteUser(userName string) {
 	// domain name
 	var domain_name string
 	sql := `select name from virtual_domains where id IN (select domain_id from virtual_users where email = ?) limit 1`
-	helpers.MyDB.Unsafe().Get(&domain_name, userName)
+	helpers.MyDB.Unsafe().Get(&domain_name,sql,userName)
 
 
 	if domain_name == "" {
