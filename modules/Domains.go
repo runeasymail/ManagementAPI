@@ -81,6 +81,11 @@ func HandleArchive(c *gin.Context) {
 	if err != nil {
 		c.JSON(200, gin.H{"result": false, "error_msg": err.Error()})
 	} else {
+
+		c.Header("Content-Description","File Transfer")
+		c.Header("Content-Type","application/octet-stream")
+		c.Header("Content-Disposition:","attachment; filename=archive.tar.gz")
+
 		c.File(filename)
 	}
 
