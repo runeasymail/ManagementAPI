@@ -6,14 +6,16 @@ import (
 	"strings"
 
 	"github.com/runeasymail/ManagementAPI/helpers"
+	"log"
 	"os"
 )
 
 type Users struct {
-	Id       uint64 `db:"id" json:"id" form:"id"`
-	DomainID uint64 `db:"domain_id" json:"domain_id" form:"domain_id" validation:"required"`
-	Password string `db:"password" json:"-" form:"password" validation:"required"`
-	Email    string `db:"email" json:"email" form:"email" validation:"email,required"`
+	Id                  uint64 `db:"id" json:"id" form:"id"`
+	DomainID            uint64 `db:"domain_id" json:"domain_id" form:"domain_id" validation:"required"`
+	Password            string `db:"password" json:"-" form:"password" validation:"required"`
+	PasswordIsEncrypted bool   `form:is_encrypted`
+	Email               string `db:"email" json:"email" form:"email" validation:"email,required"`
 }
 
 func GetAllUsers(domain_id uint64) (result []Users) {
@@ -40,7 +42,14 @@ func AddNewUser(data Users) (result bool, err error) {
 	}
 
 	sql = `insert into virtual_users (domain_id,password,email) values(?,?,?)`
-	helpers.MyDB.Unsafe().Exec(sql, data.DomainID, data.GenEncryptedPassword(), data.Email)
+
+	password := data.GenEncryptedPassword()
+	if data.PasswordIsEncrypted {
+		password = data.Password
+		log.Println("Password is already encrypted")
+	}
+
+	helpers.MyDB.Unsafe().Exec(sql, data.DomainID, password, data.Email)
 
 	result = true
 
@@ -67,8 +76,7 @@ func DeleteUser(userName string) {
 	// domain name
 	var domain_name string
 	sql := `select name from virtual_domains where id IN (select domain_id from virtual_users where email = ?) limit 1`
-	helpers.MyDB.Unsafe().Get(&domain_name,sql,userName)
-
+	helpers.MyDB.Unsafe().Get(&domain_name, sql, userName)
 
 	if domain_name == "" {
 		return
@@ -77,7 +85,7 @@ func DeleteUser(userName string) {
 	cmp := strings.Split(userName, "@")
 
 	// delete dir
-	os.RemoveAll("/var/mail/vhosts/"+domain_name+"/"+ cmp[0] + "/")
+	os.RemoveAll("/var/mail/vhosts/" + domain_name + "/" + cmp[0] + "/")
 
 	sql = `delete from virtual_users where email = ? limit 1`
 	helpers.MyDB.Unsafe().Exec(sql, userName)
