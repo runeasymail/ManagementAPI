@@ -5,6 +5,7 @@ import (
 	"github.com/runeasymail/ManagementAPI/helpers"
 	"os"
 	"os/exec"
+	"log"
 )
 
 type Domains struct {
@@ -75,8 +76,10 @@ func DeleteDomain(domain string)  {
 func ExportToFile(domain string) (filename string, err error) {
 
 	filename = "/tmp/"+domain+".tar.gz"
+	cmd := []string{"-zcvf", "/tmp/"+domain+".tar.gz","/var/mail/vhosts/"+domain+"/"}
+	_, err = exec.Command("tar", cmd...).Output()
 
-	_, err = exec.Command("tar", []string{"-zcvf", "/tmp/"+domain+".tar.gz","/var/mail/vhosts/"+domain+"/"}...).Output()
+	log.Println(cmd)
 
 	return
 }
