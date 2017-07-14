@@ -49,7 +49,7 @@ func main() {
 
 
 		// export
-		authorized.POST("/export/domain", modules.HandleArchive)
+		authorized.GET("/export/domain", modules.HandleArchive)
 
 		// dkim
 		authorized.POST("/dkim/add-new-domain", modules.HandlerNewDkimDomain)
