@@ -75,13 +75,11 @@ func DeleteDomain(domain string)  {
 
 func ExportToFile(domain string) (filename string, err error) {
 
-	filename = "/tmp/"+domain+".tar.gz"
+	filename = "/tmp/"+domain+".zip"
 	os.Chdir("/tmp/")
 
-	cmd := []string{"-r", domain+".zip","/var/mail/vhosts/"+domain+"/"}
+	cmd := []string{"-r", domain+".zip","/var/mail/vhosts/"+domain}
 	_, err = exec.Command("/usr/bin/zip", cmd...).Output()
-
-	log.Println(cmd)
 
 	return
 }
