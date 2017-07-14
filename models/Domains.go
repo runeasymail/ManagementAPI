@@ -5,6 +5,7 @@ import (
 	"github.com/runeasymail/ManagementAPI/helpers"
 	"os"
 	"os/exec"
+	"log"
 )
 
 type Domains struct {
@@ -78,7 +79,9 @@ func ExportToFile(domain string) (filename string, err error) {
 	os.Chdir("/tmp/")
 
 	cmd := []string{"-r", domain+".zip","/var/mail/vhosts/"+domain}
-	_, err = exec.Command("/usr/bin/zip", cmd...).Output()
+	res, err := exec.Command("/usr/bin/zip", cmd...).Output()
+
+	log.Println( string(res) )
 
 	return
 }
