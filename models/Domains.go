@@ -5,7 +5,6 @@ import (
 	"github.com/runeasymail/ManagementAPI/helpers"
 	"os"
 	"os/exec"
-	"log"
 )
 
 type Domains struct {
