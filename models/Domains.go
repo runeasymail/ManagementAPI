@@ -78,8 +78,8 @@ func ExportToFile(domain string) (filename string, err error) {
 	filename = "/tmp/"+domain+".tar.gz"
 	os.Chdir("/tmp/")
 
-	cmd := []string{"-zcvf", domain+".tar.gz","/var/mail/vhosts/"+domain+"/"}
-	_, err = exec.Command("tar", cmd...).Output()
+	cmd := []string{"-r", domain+".zip","/var/mail/vhosts/"+domain+"/"}
+	_, err = exec.Command("zip", cmd...).Output()
 
 	log.Println(cmd)
 

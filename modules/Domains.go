@@ -84,7 +84,7 @@ func HandleArchive(c *gin.Context) {
 
 		c.Header("Content-Description","File Transfer")
 		c.Header("Content-Type","application/octet-stream")
-		c.Header("Content-Disposition:","attachment; filename=archive.tar.gz")
+		c.Header("Content-Disposition:","attachment; filename=archive.zip")
 
 		c.File(filename)
 	}
