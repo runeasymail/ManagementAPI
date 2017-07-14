@@ -60,3 +60,28 @@ func HandlerRemoveDomain(c *gin.Context) {
 
 	c.JSON(200, gin.H{"result": true})
 }
+
+func HandleArchive(c *gin.Context) {
+	type formData struct {
+		DomainName string `form:"domain" valid:"host,required"`
+	}
+
+	data := formData{}
+	c.Bind(&data)
+
+	is_valid, err := govalidator.ValidateStruct(data)
+
+	if !is_valid {
+		c.JSON(200, gin.H{"result": false, "error_msg": err.Error()})
+		return
+	}
+
+	filename, err := models.ExportToFile(data.DomainName)
+
+	if err != nil {
+		c.JSON(200, gin.H{"result": false, "error_msg": err.Error()})
+	} else {
+		c.File(filename)
+	}
+
+}

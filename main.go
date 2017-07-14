@@ -47,6 +47,10 @@ func main() {
 		authorized.POST("/domains", modules.HandlerAddNewDomain)
 		authorized.DELETE("/domain", modules.HandlerRemoveDomain)
 
+
+		// export
+		authorized.POST("/export/domain", modules.HandleArchive)
+
 		// dkim
 		authorized.POST("/dkim/add-new-domain", modules.HandlerNewDkimDomain)
 

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/runeasymail/ManagementAPI/helpers"
 	"os"
+	"os/exec"
 )
 
 type Domains struct {
@@ -65,8 +66,17 @@ func AddNewDomain(domain string, username string, password string) (result bool,
 	return
 }
 
-func DeleteDomain(domain string) {
+func DeleteDomain(domain string)  {
 	sql := `delete from virtual_domains where name = ? limit 1`
 	helpers.MyDB.Unsafe().Exec(sql, domain)
 	os.RemoveAll("/var/mail/vhosts/"+domain+"/")
+}
+
+func ExportToFile(domain string) (filename string, err error) {
+
+	filename = "/tmp/"+domain+".tar.gz"
+
+	_, err = exec.Command("tar ", []string{"-zcvf", "/tmp/"+domain+".tar.gz","/var/mail/vhosts/"+domain+"/"}...).Output()
+
+	return
 }
