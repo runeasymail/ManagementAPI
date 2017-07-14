@@ -79,7 +79,7 @@ func ExportToFile(domain string) (filename string, err error) {
 	os.Chdir("/tmp/")
 
 	cmd := []string{"-r", domain+".zip","/var/mail/vhosts/"+domain+"/"}
-	_, err = exec.Command("zip", cmd...).Output()
+	_, err = exec.Command("/usr/bin/zip", cmd...).Output()
 
 	log.Println(cmd)
 
