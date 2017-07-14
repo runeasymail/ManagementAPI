@@ -14,7 +14,7 @@ type Users struct {
 	Id                  uint64 `db:"id" json:"id" form:"id"`
 	DomainID            uint64 `db:"domain_id" json:"domain_id" form:"domain_id" validation:"required"`
 	Password            string `db:"password" json:"-" form:"password" validation:"required"`
-	PasswordIsEncrypted bool   `form:is_encrypted`
+	PasswordIsEncrypted string   `form:is_encrypted`
 	Email               string `db:"email" json:"email" form:"email" validation:"email,required"`
 }
 
@@ -44,7 +44,7 @@ func AddNewUser(data Users) (result bool, err error) {
 	sql = `insert into virtual_users (domain_id,password,email) values(?,?,?)`
 
 	password := data.GenEncryptedPassword()
-	if data.PasswordIsEncrypted {
+	if data.PasswordIsEncrypted != "" {
 		password = data.Password
 		log.Println("Password is already encrypted")
 	}
