@@ -76,7 +76,7 @@ func ExportToFile(domain string) (filename string, err error) {
 
 	filename = "/tmp/"+domain+".tar.gz"
 
-	_, err = exec.Command("tar ", []string{"-zcvf", "/tmp/"+domain+".tar.gz","/var/mail/vhosts/"+domain+"/"}...).Output()
+	_, err = exec.Command("tar", []string{"-zcvf", "/tmp/"+domain+".tar.gz","/var/mail/vhosts/"+domain+"/"}...).Output()
 
 	return
 }
