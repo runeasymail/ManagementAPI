@@ -14,7 +14,7 @@ type Users struct {
 	Id                  uint64 `db:"id" json:"id" form:"id"`
 	DomainID            uint64 `db:"domain_id" json:"domain_id" form:"domain_id" validation:"required"`
 	Password            string `db:"password" json:"-" form:"password" validation:"required"`
-	PasswordIsEncrypted string  `form:"is_encrypted"`
+	PasswordIsEncrypted string  `form:"is_encrypted" json:"-"`
 	Email               string `db:"email" json:"email" form:"email" validation:"email,required"`
 }
 
