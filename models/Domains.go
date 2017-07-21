@@ -7,7 +7,6 @@ import (
 	"os/exec"
 	"time"
 	"io/ioutil"
-	"log"
 )
 
 type Domains struct {
