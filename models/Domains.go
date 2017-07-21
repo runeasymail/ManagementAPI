@@ -5,13 +5,29 @@ import (
 	"github.com/runeasymail/ManagementAPI/helpers"
 	"os"
 	"os/exec"
-	"log"
+	"time"
 )
 
 type Domains struct {
 	Id         uint64 `db:"id" json:"id" form:"id"`
 	Name       string `db:"name" json:"name" form:"name" validation:"required"`
 	UsersCount uint64 `db:"users_count" json:"users_count"`
+}
+type ExportUsers struct {
+	Email string `db:"email" json:"email"`
+	Password string `db:"password" json:"password"`
+}
+
+type ExportDKIM struct {
+	Public string `json:"public"`
+}
+
+type Export struct {
+	Accounts []ExportUsers `json:"accounts"`
+	Dkim ExportDKIM `json:"dkim"`
+	DomainName string `json:"domainName"`
+	GenTime string `json:"generatedAt"`
+	Filename string `json:"export_filename"`
 }
 
 // Get All domains orderder by id DESC
@@ -73,15 +89,46 @@ func DeleteDomain(domain string)  {
 	os.RemoveAll("/var/mail/vhosts/"+domain+"/")
 }
 
-func ExportToFile(domain string) (filename string, err error) {
+func ExportToFile(domain string) (filename string, export_data Export, err error) {
 
 	filename = "/var/mail/vhosts/" + domain + ".tar.gz"
 	os.Chdir("/var/mail/vhosts/")
 
 	cmd := []string{"-zcvf", domain+".tar.gz", domain}
-	res, err := exec.Command("tar", cmd...).Output()
+	exec.Command("tar", cmd...).Output()
 
-	log.Println( string(res) )
+
+	base_path := "/opt/easymail/backupsByDomain/"+domain
+	os.MkdirAll(base_path, os.ModePerm)
+
+	current_time := time.Now().Local()
+
+	filename = base_path + "/" + current_time.Format("2006-01-02") + ".tar.gz"
+
+	cmd = []string{filename, filename}
+	exec.Command("mv", cmd...).Output()
+
+	// backup db
+
+
+
+	var domain_id = ""
+	sql := `select id from virtual_domains where name = ? limit 1`
+	helpers.MyDB.Unsafe().Get(&domain_id,sql, domain)
+
+	if domain_id == "" {
+		return
+	}
+
+	sql = `select email,password from virtual_users where domain_id = ? order by id desc`
+	exported_users := []ExportUsers{}
+	helpers.MyDB.Unsafe().Select(&exported_users,sql, domain_id)
+
+
+	export_data.Accounts = exported_users
+	export_data.GenTime = current_time.Format("2006-01-02")
+	export_data.DomainName = domain
+	export_data.Filename = filename
 
 	return
 }

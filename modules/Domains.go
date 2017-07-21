@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/runeasymail/ManagementAPI/models"
 	"io/ioutil"
+	"net/http"
 )
 
 func HandlerGetAllDomains(c *gin.Context) {
@@ -77,19 +78,21 @@ func HandleArchive(c *gin.Context) {
 		return
 	}
 
-	filename, err := models.ExportToFile(data.DomainName)
+	_, export_data, err := models.ExportToFile(data.DomainName)
 
 	if err != nil {
 		c.JSON(200, gin.H{"result": false, "error_msg": err.Error()})
 	} else {
 
-		c.Header("Content-Description","File Transfer")
-		//c.Header("Content-Type","application/octet-stream")
-		c.Header("Content-Disposition:","attachment; filename=archive.tar.gz")
+		c.JSON( http.StatusOK, export_data)
 
-		dat, _ := ioutil.ReadFile(filename)
-
-		c.Data(200, "application/octet-stream",dat  )
+		//c.Header("Content-Description","File Transfer")
+		////c.Header("Content-Type","application/octet-stream")
+		//c.Header("Content-Disposition:","attachment; filename=archive.tar.gz")
+		//
+		//dat, _ := ioutil.ReadFile(filename)
+		//
+		//c.Data(200, "application/octet-stream",dat  )
 
 	}
 
