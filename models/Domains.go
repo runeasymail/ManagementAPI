@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"time"
+	"io/ioutil"
 )
 
 type Domains struct {
@@ -20,6 +21,7 @@ type ExportUsers struct {
 
 type ExportDKIM struct {
 	Public string `json:"public"`
+	Private string `json:"private"`
 }
 
 type Export struct {
@@ -126,9 +128,19 @@ func ExportToFile(domain string) (filename string, export_data Export, err error
 
 
 	export_data.Accounts = exported_users
-	export_data.GenTime = current_time.Format("2006-01-02")
+	export_data.GenTime = current_time.Format("2006-01-02 10:40:21")
 	export_data.DomainName = domain
 	export_data.Filename = filename
+
+
+	//
+	content_of_dkim, _ := ioutil.ReadFile("/etc/opendkim/keys/" + domain + "/mail.txt" )
+	content_of_private_dkim, _ := ioutil.ReadFile("/etc/opendkim/keys/" + domain + "/mail.private" )
+
+	export_data.Dkim = ExportDKIM{}
+	export_data.Dkim.Public = string(content_of_dkim)
+	export_data.Dkim.Private = string(content_of_private_dkim)
+
 
 	return
 }
