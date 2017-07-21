@@ -106,9 +106,10 @@ func ExportToFile(domain string) (filename string, export_data Export, err error
 
 	current_time := time.Now().Local()
 
+	old_file := filename
 	filename = base_path + "/" + current_time.Format("2006-01-02") + ".tar.gz"
 
-	cmd = []string{filename, filename}
+	cmd = []string{old_file, filename}
 	res, err := exec.Command("mv", cmd...).Output()
 
 	log.Println( string(res) )
