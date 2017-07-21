@@ -113,8 +113,9 @@ func ExportToFile(domain string) (filename string, export_data Export, err error
 
 	log.Println( string(res) )
 	if err != nil {
+		log.Print(cmd)
 		log.Print(err)
-		return 
+		return
 	}
 	// backup db
 
