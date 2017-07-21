@@ -110,18 +110,13 @@ func ExportToFile(domain string) (filename string, export_data Export, err error
 	filename = base_path + "/" + current_time.Format("2006-01-02") + ".tar.gz"
 
 	cmd = []string{old_file, filename}
-	res, err := exec.Command("mv", cmd...).Output()
+	_, err = exec.Command("mv", cmd...).Output()
 
-	log.Println( string(res) )
 	if err != nil {
-		log.Print(cmd)
-		log.Print(err)
 		return
 	}
-	// backup db
 
-
-
+	// db part
 	var domain_id = ""
 	sql := `select id from virtual_domains where name = ? limit 1`
 	helpers.MyDB.Unsafe().Get(&domain_id,sql, domain)
@@ -131,11 +126,9 @@ func ExportToFile(domain string) (filename string, export_data Export, err error
 	}
 
 	sql = `select email,password from virtual_users where domain_id = ? order by id desc`
-	exported_users := []ExportUsers{}
-	helpers.MyDB.Unsafe().Select(&exported_users,sql, domain_id)
+	helpers.MyDB.Unsafe().Select(&export_data.Accounts,sql, domain_id)
 
 
-	export_data.Accounts = exported_users
 	export_data.GenTime = current_time.Format("2006-01-02 10:40:21")
 	export_data.DomainName = domain
 	export_data.Filename = filename
