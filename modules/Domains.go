@@ -4,7 +4,6 @@ import (
 	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/runeasymail/ManagementAPI/models"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -85,14 +84,6 @@ func HandleArchive(c *gin.Context) {
 	} else {
 
 		c.JSON( http.StatusOK, export_data)
-
-		//c.Header("Content-Description","File Transfer")
-		////c.Header("Content-Type","application/octet-stream")
-		//c.Header("Content-Disposition:","attachment; filename=archive.tar.gz")
-		//
-		//dat, _ := ioutil.ReadFile(filename)
-		//
-		//c.Data(200, "application/octet-stream",dat  )
 
 	}
 
