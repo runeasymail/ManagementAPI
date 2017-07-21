@@ -128,7 +128,7 @@ func ExportToFile(domain string) (filename string, export_data Export, err error
 	helpers.MyDB.Unsafe().Select(&export_data.Accounts,sql, domain_id)
 
 
-	export_data.GenTime = current_time.Format("2006-01-02 10:40:21")
+	export_data.GenTime = current_time.Format("2006-01-02 15:04:05")
 	export_data.DomainName = domain
 	export_data.Filename = filename
 
