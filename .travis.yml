@@ -34,7 +34,7 @@ after_success:
   - docker stop easymail
   - cp ManagementAPI /opt/easymail/ManagementAPI/ManagementAPI
   - sleep 5
-    - docker start easymail
+  - docker start easymail
   - sleep 5
   - cd tests
   - npm install
