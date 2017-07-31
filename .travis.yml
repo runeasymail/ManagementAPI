@@ -36,6 +36,7 @@ after_success:
   - docker start easymail
   - cd tests
   - npm install
+  - npm install -g jasmine-node
   - docker cp easymail:/opt/easymail/ManagementAPI/config.ini ../config.ini
   - cat ../config.ini
   - jasmine-node --verbose --junitreport --noColor spec
