@@ -38,6 +38,7 @@ after_success:
   - npm install
   - npm install -g jasmine-node
   - docker cp easymail:/opt/easymail/ManagementAPI/config.ini ../config.ini
+  - docker cp easymail:/opt/easymail/ManagementAPI/config.ini config.ini
   - cat ../config.ini
   - ls -l
   - pwd
