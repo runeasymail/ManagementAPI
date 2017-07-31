@@ -14,7 +14,7 @@ env:
     - IMAGE_NAME=runeasymail/ManagementAPI
 before_install:
   - docker pull easymail/easymail:v1.0.0
-  - docker run -itd -p=110:110 -p=25:25 -p=995:995 -p=80:80 -p=443:443 -p=587:587 -p=993:993 -p=143:143 -p=465:465 -h "dev.cucumbermail.net" --name="easymail" -v /opt/easymail/ManagementAPI/ManagementAPI:/opt/easymail-managment-api/ManagementAPI easymail/easymail:v1.0.0 /bin/sh -c "bash /opt/easymail/post_install.sh dev.cucumbermail.net; exec /bin/bash"
+  - docker run -itd -p=127.0.0.1:443:443 -h "dev.cucumbermail.net" --name="easymail" -v /opt/easymail/ManagementAPI/ManagementAPI:/opt/easymail-managment-api/ManagementAPI easymail/easymail:v1.0.0 /bin/sh -c "bash /opt/easymail/post_install.sh dev.cucumbermail.net; exec /bin/bash"
   - docker ps -a
   - docker logs easymail
   - go get -u github.com/kardianos/govendor
