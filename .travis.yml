@@ -42,7 +42,7 @@ after_success:
   - cat ../config.ini
   - mkdir reports
   - npm install ini
-  - jasmine-node specs/
+  - jasmine-node --verbose specs/
 
 
 notifications:
