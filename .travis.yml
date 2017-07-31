@@ -40,9 +40,10 @@ after_success:
   - docker cp easymail:/opt/easymail/ManagementAPI/config.ini ../config.ini
   - docker cp easymail:/opt/easymail/ManagementAPI/config.ini config.ini
   - cat ../config.ini
+  - mkdir reports
   - ls -l
   - pwd
-  - jasmine-node specs --junitreport 
+  - jasmine-node specs/
 
 
 notifications:
