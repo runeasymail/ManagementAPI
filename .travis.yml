@@ -40,7 +40,7 @@ after_success:
   - docker cp easymail:/opt/easymail/ManagementAPI/config.ini ../config.ini
   - cat ../config.ini
   - ls -l
-  - jasmine-node ﻿specs --junitreport
+  - jasmine-node --junitreport specs/
 
 
 notifications:
