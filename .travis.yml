@@ -41,7 +41,7 @@ after_success:
   - cat ../config.ini
   - ls -l
   - pwd
-  - jasmine-node --junitreport specs
+  - jasmine-node specs --junitreport 
 
 
 notifications:
