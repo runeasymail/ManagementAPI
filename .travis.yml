@@ -33,7 +33,9 @@ after_success:
   - docker run -itd -p=127.0.0.1:443:443 -p=127.0.0.1:7080:7080 -p=8081:7080  -h "dev.cucumbermail.net" -v /opt/easymail/ManagementAPI/ManagementAPI:/opt/easymail-managment-api/ManagementAPI --name="easymail" easymail/easymail:v1.0.1 /bin/sh -c "bash /opt/easymail/post_install.sh dev.cucumbermail.net; exec /bin/bash"
   - docker stop easymail
   - cp ManagementAPI /opt/easymail/ManagementAPI/ManagementAPI
+  - sleep 5
   - docker start easymail
+  - sleep 5
   - cd tests
   - npm install
   - npm install -g jasmine-node
