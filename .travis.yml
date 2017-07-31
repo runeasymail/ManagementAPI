@@ -14,8 +14,6 @@ env:
     - IMAGE_NAME=runeasymail/ManagementAPI
 before_install:
   - docker pull easymail/easymail:v1.0.0
-  - docker ps -a
-  - docker logs easymail
   - go get -u github.com/kardianos/govendor
   - go env && pwd
 
@@ -33,7 +31,7 @@ after_success:
   - docker stop easymail
   - cp ManagementAPI /opt/easymail/ManagementAPI/ManagementAPI
   - docker start easymail
-  
+
 
 
 notifications:
