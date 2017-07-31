@@ -19,7 +19,6 @@ before_install:
   - docker pull easymail/easymail:v1.0.0
   - go get -u github.com/kardianos/govendor
   - go env && pwd
-  - npm --version
 
 script:
   - govendor list
@@ -35,7 +34,8 @@ after_success:
   - docker stop easymail
   - cp ManagementAPI /opt/easymail/ManagementAPI/ManagementAPI
   - docker start easymail
-  -
+  - cd tests
+  - npm install
 
 
 notifications:
