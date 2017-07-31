@@ -39,7 +39,7 @@ after_success:
   - npm install -g jasmine-node
   - docker cp easymail:/opt/easymail/ManagementAPI/config.ini ../config.ini
   - cat ../config.ini
-  - jasmine-node  --junitreport
+  - jasmine-node ﻿specs --junitreport
 
 
 notifications:
