@@ -17,6 +17,8 @@ var logged = function(callback) {
 			username: config.auth.username,
 			password: config.auth.password
 		})
+		.inspectBody()
+		.inspectRequest()
 		.expectStatus(200)
 		.expectJSON({result: true})
 		.afterJSON(function(json) {
