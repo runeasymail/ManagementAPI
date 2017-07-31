@@ -36,6 +36,7 @@ after_success:
   - docker start easymail
   - cd tests
   - npm install
+  - jasmine-node --verbose --junitreport --noColor spec
 
 
 notifications:
