@@ -11,7 +11,8 @@ var logged = function(callback) {
 			baseUri: config.baseUrl
 		}
 	});
-
+	console.log("config", config);
+	console.log("config.auth.username", config.auth.username);
 	frisby.create('Login')
 		.post('auth', {
 			username: config.auth.username,
