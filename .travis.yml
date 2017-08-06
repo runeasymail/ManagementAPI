@@ -38,7 +38,7 @@ script:
   - docker cp easymail:/opt/easymail/ManagementAPI/config.ini config.ini
   - mkdir reports
   - npm install ini
-  - jasmine-node --verbose specs
+  - jasmine-node --verbose specs/
   - docker logs easymail
 
 notifications:
