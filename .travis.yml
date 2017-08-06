@@ -36,7 +36,6 @@ script:
   - npm install -g jasmine-node
   - docker cp easymail:/opt/easymail/ManagementAPI/config.ini ../config.ini
   - docker cp easymail:/opt/easymail/ManagementAPI/config.ini config.ini
-  - cat ../config.ini
   - mkdir reports
   - npm install ini
   - jasmine-node --verbose specs/
