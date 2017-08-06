@@ -30,9 +30,7 @@ script:
   - sleep 5
   - docker stop easymail
   - cp ManagementAPI /opt/easymail/ManagementAPI/ManagementAPI
-  - sleep 5
   - docker start easymail
-  - sleep 5
   - cd tests
   - npm install
   - npm install -g jasmine-node
@@ -42,8 +40,6 @@ script:
   - mkdir reports
   - npm install ini
   - jasmine-node --verbose specs/
-  - echo $?
-  - echo "------------------ look before"
   - docker logs easymail
 
 notifications:
