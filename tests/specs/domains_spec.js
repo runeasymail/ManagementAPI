@@ -1,10 +1,9 @@
 var apiClient = require('../apiClient');
 
 apiClient.logged(function(frisby){
-	frisby.create('Get domains5')
+	frisby.create('Get domains')
 		.get('domains')
 		.expectStatus(200)
-		.expectJSON({domains: null})
 		.toss();
 });
 
