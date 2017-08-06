@@ -2,7 +2,7 @@ var apiClient = require('../apiClient');
 var utils = require('../utils');
 
 apiClient.logged(function(frisby){
-	frisby.create('Get domains1')
+	frisby.create('Get domains')
 		.get('domains')
 		.expectStatus(200)
 		.toss();
@@ -48,7 +48,7 @@ apiClient.logged(function(frisby){
 		.expectStatus(200)
 		.toss();
 
-	frisby.create('Get domains2')
+	frisby.create('Get domains')
 		.get('domains')
 		.expectStatus(200)
 		.afterJSON(function(json){
