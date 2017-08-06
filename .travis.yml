@@ -45,6 +45,8 @@ after_success:
   - mkdir reports
   - npm install ini
   - jasmine-node --verbose specs/
+  - echo $?
+  - echo "------------------ look before"
   - docker logs easymail
 
 notifications:
