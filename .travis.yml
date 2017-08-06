@@ -53,7 +53,7 @@ deploy:
   provider: releases
   api_key: 
     secure: "gm6dElhATvXr1/ZAVQg51vzsHEZpMUO+Fg72St4EGxY7GsmlqjfnwZTW4EhUQZ2qR8+3fFihvlz0gc+OdpnTM+F9Alqq2pMHVkB09pTqQCpQXJUF6RwNEWtgp//iuWY3p90RlvVsb7IXlguIhBKGjaTXLnvINB968ab0jl642nbRh+UerRu7FE6HwWKhqERfXBICsaKqa2FK+CcLEzU86cPUdaKbU0KgYu56Nu2nGyqrGA6OdgvQbkQX/y34xIM9aF607TMdeggyQJGOo7TC4MQ8k5QXnayGdI8XhbXRhxuW43ydKeN9L1z7OCL2n6Qhv5IZYL78YmprIqXJsewZntSC9jQKHSlDF1xe6tWnWLsGk1SIDjN9i1Mc2oiHzw4dKdo0LcsCc94B8BW60As018V40aLeJxaOn83UTgv6xMsJVEM38ZcsDR+iCftAgsdOy7J4E4/yzED9UQN7v+60N5yN4qYaYnAVmn34bxr9egYIf+YRqJ0UBCeWTZeZBKhMWgl8ch2qPa0iGOrdf2jesNTvaMP65MeqSWd603OqxypkZjHbGcRmjS0yyrSjp0u3IoOh4Be0W6FGbmiewP64K1QDn/ia/Ft//gZKnN08dxMh3xvsc7CU8J6KHV5Qya2P3PC7HDIkzSGpSCH0l5l0Nr/4gD0X+svzRN2Prv+MqH4="
-  file: "~/ManagementAPI"
+  file: "/home/travis/gopath/src/github.com/runeasymail/ManagementAP/ManagementAPI"
   skip_cleanup: true
   on:
     tags: true
