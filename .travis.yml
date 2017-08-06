@@ -4,6 +4,13 @@ dist: trusty
 install: true
 go:
   - 1.8.1
+
+node_js:
+  - "node"
+
+services:
+  - docker
+
 env:
   global:
     - GOARCH=amd64
@@ -17,6 +24,22 @@ script:
   - govendor sync
   - echo $TRAVIS_COMMIT
   - CGO_ENABLED=0 go build -ldflags "-X main.git_sha=$TRAVIS_COMMIT" .
+  - mkdir -p /opt/easymail/ManagementAPI/
+  - cp ManagementAPI /opt/easymail/ManagementAPI/ManagementAPI
+  - docker run -itd -p=127.0.0.1:443:443 -p=127.0.0.1:7080:7080 -p=8081:7080  -h "dev.cucumbermail.net" -v /opt/easymail/ManagementAPI/ManagementAPI:/opt/easymail-managment-api/ManagementAPI --name="easymail" easymail/easymail:v1.0.2 /bin/sh -c "bash /opt/easymail/post_install.sh dev.cucumbermail.net; exec /bin/bash"
+  - sleep 5
+  - docker stop easymail
+  - cp ManagementAPI /opt/easymail/ManagementAPI/ManagementAPI
+  - docker start easymail
+  - cd tests
+  - npm install
+  - npm install -g jasmine-node
+  - docker cp easymail:/opt/easymail/ManagementAPI/config.ini ../config.ini
+  - docker cp easymail:/opt/easymail/ManagementAPI/config.ini config.ini
+  - mkdir reports
+  - npm install ini
+  - jasmine-node --verbose specs/
+  - docker logs easymail
 
 notifications:
   email:
