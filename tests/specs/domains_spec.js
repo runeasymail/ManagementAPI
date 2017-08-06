@@ -1,7 +1,7 @@
 var apiClient = require('../apiClient');
 
 apiClient.logged(function(frisby){
-	frisby.create('Get domains')
+	frisby.create('Get domains5')
 		.get('domains')
 		.expectStatus(200)
 		.expectJSON({domains: null})
