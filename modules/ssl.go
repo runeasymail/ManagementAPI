@@ -14,6 +14,7 @@ import (
 	"github.com/runeasymail/ManagementAPI/helpers"
 	"fmt"
 	"io"
+	"log"
 )
 
 type cmds struct {
@@ -98,7 +99,12 @@ func get_external(url string, filename string) {
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("cache-control", "no-cache")
 
-	res, _ := http.DefaultClient.Do(req)
+	res, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+		log.Println("Get External error", err.Error())
+		return
+	}
 
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
