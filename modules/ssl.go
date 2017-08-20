@@ -181,7 +181,7 @@ func letsEncryptInit(Hostname string, acme_default_ca string) (err error) {
 		return
 	}
 
-	get_external("https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem", "/ssl/lets-encrypt-x3-cross-signed.pem")
+	get_external("https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem", "/ssl/intermediate.pem")
 
 	out, er = exec.Command("cat", []string{"/ssl/signed.crt", "/ssl/intermediate.pem"}...).Output()
 	if er != nil {
