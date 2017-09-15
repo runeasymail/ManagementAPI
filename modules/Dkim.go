@@ -71,16 +71,17 @@ func add(Domain string) (public string, private string) {
 		log.Debug("service postfixx restart error", er)
 	}
 
-	_, er = exec.Command("service", []string{"opendkim", "restart"}...).Output()
-	if er != nil {
-		log.Debug("service opendkim restart error", er)
-	}
 
 
 	cmd := exec.Command("/bin/sh", "-c", "OPENDKIM_PID=$(ps aux | grep /usr/sbin/opendkim | awk '{print $2}' | head -n 2) && kill -9 $OPENDKIM_PID && service opendkim start")
 	er = cmd.Run()
 	if er != nil {
 		log.Debug("OPENDKIM restart", er)
+	}
+
+	_, er = exec.Command("service", []string{"opendkim", "restart"}...).Output()
+	if er != nil {
+		log.Debug("service opendkim restart error", er)
 	}
 
 
