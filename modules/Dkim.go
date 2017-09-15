@@ -77,6 +77,13 @@ func add(Domain string) (public string, private string) {
 	}
 
 
+	cmd := exec.Command("/bin/sh", "-c", "OPENDKIM_PID=$(ps aux | grep /usr/sbin/opendkim | awk '{print $2}' | head -n 2) && kill -9 $OPENDKIM_PID && service opendkim start")
+	er = cmd.Run()
+	if er != nil {
+		log.Debug("OPENDKIM restart", er)
+	}
+
+
 	content_of_dkim, _ := ioutil.ReadFile("/etc/opendkim/keys/" + Domain + "/mail.txt" )
 	content_of_private_dkim, _ := ioutil.ReadFile("/etc/opendkim/keys/" + Domain + "/mail.private" )
 
