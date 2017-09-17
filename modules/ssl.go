@@ -192,13 +192,16 @@ func letsEncryptInit(Hostname string, acme_default_ca string) (err error) {
 	exec.Command("cp", []string{"/ssl/chained.pem", "/etc/dovecot/dovecot.pem"}...).Output()
 	exec.Command("cp", []string{"/ssl/domain.key", "/etc/dovecot/private/dovecot.pem"}...).Output()
 
-	out, er = exec.Command("service", []string{"nginx", "reload"}...).Output()
-	if er != nil {
-		log.Debug("NGINX Service Reload error ", er)
-	} else {
-		log.Debug("NGINX reload output", string(out))
-	}
-	
+	go func(){
+		time.Sleep(5 * time.Second)
+		out, er := exec.Command("service", []string{"nginx", "reload"}...).Output()
+		if er != nil {
+			log.Debug("NGINX Service Reload error ", er)
+		} else {
+			log.Debug("NGINX reload output", string(out))
+		}
+	}()
+
 	out, er = exec.Command("service", []string{"postfix", "reload"}...).Output()
 	if er != nil {
 		log.Debug("Postfix Service Reload error ", er)
