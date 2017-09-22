@@ -146,27 +146,6 @@ func letsEncryptInit(Hostname string, acme_default_ca string) (err error) {
 		ioutil.WriteFile("/ssl/acme_tiny.py", []byte(replaced_), os.ModePerm)
 	}
 
-	// replace nginx config
-	lets_encry_nginx_config := `
-
-	location /.well-known/acme-challenge/ {
-		alias /var/www/challenges/;
-		try_files $uri =404;
-	}
-
-	`
-	nginx_config, _ := ioutil.ReadFile("/etc/nginx/sites-enabled/roundcube")
-	nginx_new := strings.Replace(string(nginx_config), "# __EASY_MAIL_INCLUDE_LETSENCRYPT__", lets_encry_nginx_config, -1)
-	ioutil.WriteFile("/etc/nginx/sites-enabled/roundcube", []byte(nginx_new), os.ModePerm)
-
-	// nginx reload
-	out, er = exec.Command("service", []string{"nginx", "reload"}...).Output()
-	if er != nil {
-		log.Debug("NGINX Service Reload error ", er)
-	} else {
-		log.Debug("NGINX reload output", string(out))
-	}
-
 	out, er = exec.Command("python", []string{"/ssl/acme_tiny.py", "--account-key", "/ssl/account.key", "--csr", "/ssl/domain.csr", "--acme-dir", "/var/www/challenges/"}...).Output()
 
 	if er != nil {
