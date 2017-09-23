@@ -36,7 +36,7 @@ func LetsEncryptHandler(c *gin.Context) {
 	if status != nil {
 		c.JSON(200, gin.H{"result": false, "error": fmt.Sprintf("%s", status)})
 	} else {
-		c.JSON(200, gin.H{"result": true, "message": "Changes will be apllieded in few minutes"})
+		c.JSON(200, gin.H{"result": true, "message": "Changes will be applied in few minutes"})
 	}
 
 }
