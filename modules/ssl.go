@@ -2,19 +2,18 @@ package modules
 
 import (
 	"crypto/tls"
-	"github.com/gin-gonic/gin"
+	"fmt"
+	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
-	"strings"
-	"errors"
 	"time"
+
+	"github.com/gin-gonic/gin"
 	"github.com/op/go-logging"
 	"github.com/runeasymail/ManagementAPI/helpers"
-	"fmt"
-	"io"
-	"log"
 )
 
 type cmds struct {
@@ -30,10 +29,9 @@ func LetsEncryptHandler(c *gin.Context) {
 
 	log.Debug("Generate SSL for ", hostname)
 
-
 	acme_default_ca := c.PostForm("default_ca")
 
-	status := letsEncryptInit(hostname,acme_default_ca)
+	status := letsEncryptInit(hostname, acme_default_ca)
 
 	if status != nil {
 		c.JSON(200, gin.H{"result": false, "error": fmt.Sprintf("%s", status)})
@@ -58,20 +56,18 @@ func UploadMySSLHandler(c *gin.Context) {
 	io.Copy(out, ssl_certificate)
 	// end of file creation
 
-
 	// create file
 	out, _ = os.Create("/etc/dovecot/private/dovecot.pem")
 	defer out.Close()
 	io.Copy(out, ssl_certificate_key)
 	// end of file creation
 
-
 	//restart services
 	exec.Command("service", []string{"postfix", "restart"}...).Output()
 	exec.Command("service", []string{"dovecot", "restart"}...).Output()
 	exec.Command("service", []string{"nginx", "restart"}...).Output()
 
-	c.JSON(200, gin.H{"result":true})
+	c.JSON(200, gin.H{"result": true})
 }
 
 func CheckSSLisValidHandler(c *gin.Context) {
@@ -117,7 +113,6 @@ func letsEncryptInit(Hostname string, acme_default_ca string) (err error) {
 
 	var log = logging.MustGetLogger("mail")
 
-
 	// create a /ssl dir
 	os.RemoveAll("/ssl")
 	os.MkdirAll("/ssl", os.ModePerm)
@@ -125,35 +120,47 @@ func letsEncryptInit(Hostname string, acme_default_ca string) (err error) {
 	// mkdir -p /var/www/challenges/
 	os.MkdirAll("/var/www/challenges/", os.ModePerm)
 
-
 	get_external("https://github.com/hlandau/acme/releases/download/v0.0.61/acmetool-v0.0.61-linux_amd64.tar.gz", "/ssl/acmetool-v0.0.61-linux_amd64.tar.gz")
 
-	exec.Command("tar",[]string{"-zxvf", "/ssl/acmetool-v0.0.61-linux_amd64.tar.gz"}...).Output()
+	cmd := exec.Command("tar", []string{"-zxvf", "/ssl/acmetool-v0.0.61-linux_amd64.tar.gz"}...)
+	cmd.Dir = "/ssl"
+	cmd.Output()
 
-	exec.Command("cp",[]string{"/ssl/acmetool-v0.0.61-linux_amd64/bin/acmetool", "/ssl/acmetool"}...).Output()
+	exec.Command("cp", []string{"/ssl/acmetool-v0.0.61-linux_amd64/bin/acmetool", "/ssl/acmetool"}...).Output()
 
-	os.RemoveAll("/ssl/acmetool-v0.0.61-linux_amd64" )
+	os.RemoveAll("/ssl/acmetool-v0.0.61-linux_amd64")
 
 	os.MkdirAll("/var/lib/acme/conf", os.ModePerm)
 
 	acme_config := `
 request:
-  provider: https://acme-staging.api.letsencrypt.org/directory
+  provider: https://acme-v01.api.letsencrypt.org/directory
   key:
     type: rsa
   challenge:
     webroot-paths:
-    - /projects/ssl/acme-chalanges
+    - /var/www/challenges
 `
 	ioutil.WriteFile("/var/lib/acme/conf/target", []byte(acme_config), os.ModePerm)
 
-	out, er :=exec.Command("/ssl/acmetool", []string{"want", Hostname}...).Output()
+	go func(Hostname string) {
+		out, er := exec.Command("/ssl/acmetool", []string{"--xlog.stderr", "want", Hostname}...).Output()
 
-	if er != nil {
-		fmt.Println(er.Error())
-	} else {
-		log.Debug(out)
-	}
+		if er != nil {
+			fmt.Println(er.Error())
+		} else {
+			log.Debug(out)
+		}
+
+		dir := `/var/lib/acme/live/` + Hostname
+
+		exec.Command("cp", []string{dir + "/fullchain", "/etc/dovecot/dovecot.pem"}...).Output()
+		exec.Command("cp", []string{dir + "/privkey", "/etc/dovecot/private/dovecot.pem"}...).Output()
+
+		time.Sleep(5 * time.Second)
+		exec.Command("service", []string{"nginx", "reload"}...).Output()
+
+	}(Hostname)
 
 	//
 	//// ACME STG ... testing
@@ -211,6 +218,6 @@ request:
 	//} else {
 	//	log.Debug("Dovecot reload output", string(out))
 	//}
-	
+
 	return
 }
