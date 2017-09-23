@@ -132,6 +132,14 @@ expect \"Are you sure?\"
 send \"Y\"
 send \"n\r\"
 
+expect \"Terms of Service Agreement Required\"
+send \"Y\"
+send \"n\r\"
+
+expect \"Mail\"
+send \"Y\"
+send \"n\r\"
+
 expect eof"`
 
 	ioutil.WriteFile("/ssl/run.sh", []byte(tmp_script), os.ModePerm)
