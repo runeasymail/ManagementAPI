@@ -125,75 +125,92 @@ func letsEncryptInit(Hostname string, acme_default_ca string) (err error) {
 	// mkdir -p /var/www/challenges/
 	os.MkdirAll("/var/www/challenges/", os.ModePerm)
 
-	out, _ := exec.Command("openssl", []string{"genrsa", "4096"}...).Output()
-	ioutil.WriteFile("/ssl/account.key", out, os.ModePerm)
 
-	out, _ = exec.Command("openssl", []string{"genrsa", "4096"}...).Output()
-	ioutil.WriteFile("/ssl/domain.key", out, os.ModePerm)
+	get_external("https://github.com/hlandau/acme/releases/download/v0.0.61/acmetool-v0.0.61-linux_amd64.tar.gz", "/ssl/acmetool-v0.0.61-linux_amd64.tar.gz")
 
-	out, er := exec.Command("openssl", []string{"req", "-new", "-sha256", "-key", "/ssl/domain.key", "-subj", "/CN=" + Hostname}...).Output()
+	exec.Command("tar",[]string{"-zxvf", "/ssl/acmetool-v0.0.61-linux_amd64.tar.gz"}...).Output()
+
+	exec.Command("cp",[]string{"/ssl/acmetool-v0.0.61-linux_amd64/bin/acmetool", "/ssl/acmetool"}...).Output()
+
+	os.RemoveAll("/ssl/acmetool-v0.0.61-linux_amd64" )
+
+	os.MkdirAll("/var/lib/acme/conf", os.ModePerm)
+
+	acme_config := `
+request:
+  provider: https://acme-staging.api.letsencrypt.org/directory
+  key:
+    type: rsa
+  challenge:
+    webroot-paths:
+    - /projects/ssl/acme-chalanges
+`
+	ioutil.WriteFile("/var/lib/acme/conf/target", []byte(acme_config), os.ModePerm)
+
+	out, er :=exec.Command("/ssl/acmetool", []string{"want", Hostname}...).Output()
+
 	if er != nil {
-		log.Debug("OpenSSL Generate Domain Key error", er)
-	}
-	ioutil.WriteFile("/ssl/domain.csr", out, os.ModePerm)
-
-	get_external("https://raw.githubusercontent.com/diafygi/acme-tiny/master/acme_tiny.py", "/ssl/acme_tiny.py")
-
-	// ACME STG ... testing
-	if acme_default_ca == "staging" {
-		readed , _ := ioutil.ReadFile("/ssl/acme_tiny.py")
-		replaced_ := strings.Replace(string(readed), `DEFAULT_CA = "https://acme-v01.api.letsencrypt.org"`, `DEFAULT_CA = "https://acme-staging.api.letsencrypt.org"`, -1)
-		ioutil.WriteFile("/ssl/acme_tiny.py", []byte(replaced_), os.ModePerm)
-	}
-
-	out, er = exec.Command("python", []string{"/ssl/acme_tiny.py", "--account-key", "/ssl/account.key", "--csr", "/ssl/domain.csr", "--acme-dir", "/var/www/challenges/"}...).Output()
-
-	if er != nil {
-		log.Debug("Python acme Tiny Error", er)
-	}
-
-	ioutil.WriteFile("/ssl/signed.crt", out, os.ModePerm)
-
-	if string(out) == "" {
-		log.Debug("LetsEncrypt output is empty")
-		err = errors.New("Let's encrypt error")
-		return
-	}
-
-	get_external("https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem", "/ssl/intermediate.pem")
-
-	out, er = exec.Command("cat", []string{"/ssl/signed.crt", "/ssl/intermediate.pem"}...).Output()
-	if er != nil {
-		log.Debug("cat signed with intermediate error", er)
-	}
-	ioutil.WriteFile("/ssl/chained.pem", out, os.ModePerm)
-
-	exec.Command("cp", []string{"/ssl/chained.pem", "/etc/dovecot/dovecot.pem"}...).Output()
-	exec.Command("cp", []string{"/ssl/domain.key", "/etc/dovecot/private/dovecot.pem"}...).Output()
-
-	go func(){
-		time.Sleep(5 * time.Second)
-		out, er := exec.Command("service", []string{"nginx", "reload"}...).Output()
-		if er != nil {
-			log.Debug("NGINX Service Reload error ", er)
-		} else {
-			log.Debug("NGINX reload output", string(out))
-		}
-	}()
-
-	out, er = exec.Command("service", []string{"postfix", "reload"}...).Output()
-	if er != nil {
-		log.Debug("Postfix Service Reload error ", er)
+		fmt.Println(er.Error())
 	} else {
-		log.Debug("Postfix reload output", string(out))
+		log.Debug(out)
 	}
-	
-	out, er = exec.Command("service", []string{"dovecot", "restart"}...).Output()
-	if er != nil {
-		log.Debug("Dovecot Service Restart error ", er)
-	} else {
-		log.Debug("Dovecot reload output", string(out))
-	}
+
+	//
+	//// ACME STG ... testing
+	//if acme_default_ca == "staging" {
+	//	readed , _ := ioutil.ReadFile("/ssl/acme_tiny.py")
+	//	replaced_ := strings.Replace(string(readed), `DEFAULT_CA = "https://acme-v01.api.letsencrypt.org"`, `DEFAULT_CA = "https://acme-staging.api.letsencrypt.org"`, -1)
+	//	ioutil.WriteFile("/ssl/acme_tiny.py", []byte(replaced_), os.ModePerm)
+	//}
+	//
+	//out, er = exec.Command("python", []string{"/ssl/acme_tiny.py", "--account-key", "/ssl/account.key", "--csr", "/ssl/domain.csr", "--acme-dir", "/var/www/challenges/"}...).Output()
+	//
+	//if er != nil {
+	//	log.Debug("Python acme Tiny Error", er)
+	//}
+	//
+	//ioutil.WriteFile("/ssl/signed.crt", out, os.ModePerm)
+	//
+	//if string(out) == "" {
+	//	log.Debug("LetsEncrypt output is empty")
+	//	err = errors.New("Let's encrypt error")
+	//	return
+	//}
+	//
+	//get_external("https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem", "/ssl/intermediate.pem")
+	//
+	//out, er = exec.Command("cat", []string{"/ssl/signed.crt", "/ssl/intermediate.pem"}...).Output()
+	//if er != nil {
+	//	log.Debug("cat signed with intermediate error", er)
+	//}
+	//ioutil.WriteFile("/ssl/chained.pem", out, os.ModePerm)
+	//
+	//exec.Command("cp", []string{"/ssl/chained.pem", "/etc/dovecot/dovecot.pem"}...).Output()
+	//exec.Command("cp", []string{"/ssl/domain.key", "/etc/dovecot/private/dovecot.pem"}...).Output()
+	//
+	//go func(){
+	//	time.Sleep(5 * time.Second)
+	//	out, er := exec.Command("service", []string{"nginx", "reload"}...).Output()
+	//	if er != nil {
+	//		log.Debug("NGINX Service Reload error ", er)
+	//	} else {
+	//		log.Debug("NGINX reload output", string(out))
+	//	}
+	//}()
+	//
+	//out, er = exec.Command("service", []string{"postfix", "reload"}...).Output()
+	//if er != nil {
+	//	log.Debug("Postfix Service Reload error ", er)
+	//} else {
+	//	log.Debug("Postfix reload output", string(out))
+	//}
+	//
+	//out, er = exec.Command("service", []string{"dovecot", "restart"}...).Output()
+	//if er != nil {
+	//	log.Debug("Dovecot Service Restart error ", er)
+	//} else {
+	//	log.Debug("Dovecot reload output", string(out))
+	//}
 	
 	return
 }
